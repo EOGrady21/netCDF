@@ -1,0 +1,21 @@
+Name,Value,Definition
+acknowledgement,E. Chisholm,an acknowledgement of teams or individuals who have helped with the data set (optional)
+comment,this is a test,"a comment on the data set, processing or otherwise"
+cruise_desciption,hudson?blah blah,a description of the recovery and deployment missions
+experiment,experiment,the experiment that data was collected under
+featureType,timeSeries,"the netCDF featureType of the data set, timeSeries, Profile, etc (see netCDF format documentation)"
+firmware_version,0,The firmware version running on the instrument if relevant
+history,history,The history of the processing and data set
+keywords,keywords,relevant GCMD keywords that describe the data set
+keywords_vocabulary,GCMD science Keywords,GCMD science keywords or similar
+naming_authority,"BODC, MEDS, CF v52",The organizations which distribute the naming conventions used in the document
+processing_history,processing_history,A short description of processing steps to QC the data set
+program,program,The program under which data was collected
+project,project,The project under which dat awas collected
+publisher_email,email,The email of the dat shop which published and processed this data set
+publisher_name,name,The name of the person who created this document
+sea_name,sea,From the list of sea names provided by NOAA at _____
+source,source,The source of the document
+standard_name_vocabulary,CF v52,The standard_name_vocabulary of the document
+summary,summary,The summary of the document
+title,THIS IS A TEST,The title of the document

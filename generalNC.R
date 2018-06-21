@@ -200,7 +200,7 @@ NCcreate <- function(obj, filename, metadata){
   ncatt_put(ncout, var1, "generic_name", "var1")
   ncatt_put(ncout, var2, "generic_name", "var2")
   ncatt_put(ncout, var3, "generic_name", "var3")
-  ncatt_put(ncout, var4, "generic_name", "var4")       #issue in current NC protocol
+  ncatt_put(ncout, var4, "generic_name", "var4")       
   ncatt_put(ncout, var5, "generic_name", "var5")
   ncatt_put(ncout, var6, "generic_name", "var6")
   ncatt_put(ncout, var7, "generic_name", "var7")
