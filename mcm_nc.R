@@ -32,8 +32,8 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   units2 <- obj@metadata$units[[variable_2]]$scale
   P01_VAR2 <- 'SDN:P01::PSLTZZ01'
   P01_name_var2 <- 'Practical salinity of the water body'
-  P06_var2 <- 
-  P06_name_var2 <- 
+  P06_var2 <- 'SDN:P06::UUUU'
+  P06_name_var2 <- 'Dimensionless'
   std_variable_2 <- 
   var2max <- 50
   var2min <- 0
