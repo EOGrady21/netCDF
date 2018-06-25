@@ -8,10 +8,20 @@ read.odf.cm <- function(filename ){
 
 obj <- read.oce(filename)
 
+speed <- obj[['speedHorizontal']]
+direction <- obj[['directionTrue']]
+
+deg2rad <- function(angle){
+  angle * pi/180
+}
+
+u <- speed*cos(deg2rad(direction))
+v <- speed*sin(deg2rad(direction))
+
 mcm <- as.cm(
   time = obj@data$time,
-  u = obj@data$directionTrue,     #is this correct??
-  v = obj@data$speedHorizontal,
+   u = u,     #is this correct??
+   v = v,
   pressure = obj@data$pressure,
   temperature = obj@data$temperature,
   salinity = obj@data$salinity,
@@ -22,7 +32,7 @@ mcm <- as.cm(
 
 for (m in names(mcm@metadata)) {
   if (m != 'units' & m != 'flags' & m != 'dataNamesOriginal') {
-    adp <- oceSetMetadata(adp, m, mcm[[m]], note = NULL)
+    obj <- oceSetMetadata(obj, m, mcm[[m]], note = NULL)
   }
 }
 
