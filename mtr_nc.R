@@ -106,7 +106,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "time_coverage_duration_units", "days")
   ncatt_put(ncout, 0, "cdm_data_type", "station")
   ncatt_put(ncout, 0, "serial_number", obj[['serialNumber']])
-  ncatt_put(ncout, 0, "data_type", 'MCM')
+  ncatt_put(ncout, 0, "data_type", 'MTR')
   ncatt_put(ncout, 0, "longitude", obj[['longitude']])
   ncatt_put(ncout, 0, "latitude", obj[['latitude']])
   ncatt_put(ncout, 0, "platform", obj[['cruise']])
