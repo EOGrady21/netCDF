@@ -11,7 +11,9 @@ obj <- read.odf('mctd/MCTD_HUD2015006_1897_11688_1800.ODF', header = 'list')
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
 #'   
-#' @return netCDF file
+#' @return netCDF file with variables temperature, conductivity, pressure, sigma
+#'   theta, theta, oxygen, salinity, time, time string, station, latitude,
+#'   longitude
 #' @export
 #'
 #' @examples

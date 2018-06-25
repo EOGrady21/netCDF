@@ -13,7 +13,8 @@ obj <- read.odf('mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
 #'   
-#' @return netCDF file
+#' @return netCDF file with variables, temperature, time, time_String, station,
+#'   latitude, longitude
 #' @export
 #'
 #' @examples

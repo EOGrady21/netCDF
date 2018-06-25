@@ -6,7 +6,8 @@
 #' @param metadata a csv file following the standard template which includes all necessary metadata 
 #' @param filename the desired name for the netCDF file produced
 #'
-#' @return netCDF file
+#' @return netCDF file with variables temperature, slainity, pressure, current
+#'   direction, current speed, time, time string, latitude, longitude, station
 #' @export
 #'
 #' @examples
