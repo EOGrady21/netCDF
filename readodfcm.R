@@ -4,6 +4,14 @@ library(oce)
 
 filename <- 'mcm/MCM_HUD2013008_1844_602_3600.ODF'
 
+#' MCM odf 2 oce
+#'
+#' @param filename odf file containing Moored current metre (MCM) data
+#'
+#' @return an oce object, cm - class containing all the data from the odf file
+#' @export
+#'
+#' @examples
 read.odf.cm <- function(filename ){
 
 obj <- read.oce(filename)

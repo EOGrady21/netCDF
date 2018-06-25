@@ -2,6 +2,14 @@
 
 filename <- 'mctd/MCTD_HUD2015006_1897_11688_1800.ODF'
 
+#' mctd odf 2 oce
+#'
+#' @param filename odf file containing moored CTD data (MCTD)
+#'
+#' @return oce object, ctd class containing all the data and metadata from the ODF
+#' @export
+#'
+#' @examples
 read.odf.mctd <- function(filename){
   
   obj <- read.odf(filename, header = 'list')
