@@ -420,6 +420,12 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   
   
   ####variables####
+  
+  
+  ##reference scales
+  
+  ncatt_put(ncout, var1, 'reference_scale', 'IPTS-68')
+  
   #sensor type, sensor depth and serial number for each variable
   
   ncatt_put(ncout, var1, "sensor_type", obj[['model']])

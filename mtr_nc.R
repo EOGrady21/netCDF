@@ -116,6 +116,9 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "cruise_name", obj[['cruise']])
   
   ####variables####
+  
+  ncatt_put(ncout, var1, 'reference_scale', 'IPTS-68')
+  
   #sensor type, sensor depth and serial number for each variable
   
   ncatt_put(ncout, var1, "sensor_type", obj[['model']])
