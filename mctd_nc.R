@@ -221,12 +221,12 @@ ncatt_put(ncout, var4, "serial_number", obj[['serialNumber']])
 ncatt_put(ncout, var5, "sensor_type", obj[['model']])
 ncatt_put(ncout, var5, "sensor_depth", obj[['depthMin']])
 ncatt_put(ncout, var5, "serial_number", obj[['serialNumber']])
-ncatt_put(ncout, var6, "sensor_type", obj[['inst_type']])
-ncatt_put(ncout, var6, "sensor_depth", obj[['sensor_depth']])
-ncatt_put(ncout, var6, "serial_number", obj[['serial_number']])
-ncatt_put(ncout, var7, "sensor_type", obj[['inst_type']])
-ncatt_put(ncout, var7, "sensor_depth", obj[['sensor_depth']])
-ncatt_put(ncout, var7, "serial_number", obj[['serial_number']])
+ncatt_put(ncout, var6, "sensor_type", obj[['model']])
+ncatt_put(ncout, var6, "sensor_depth", obj[['depthMin']])
+ncatt_put(ncout, var6, "serial_number", obj[['serialNumber']])
+ncatt_put(ncout, var7, "sensor_type", obj[['model']])
+ncatt_put(ncout, var7, "sensor_depth", obj[['depthMin']])
+ncatt_put(ncout, var7, "serial_number", obj[['serialNumber']])
 
 
 #generic names
