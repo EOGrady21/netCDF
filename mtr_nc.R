@@ -38,7 +38,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   
   #FILENAME
   if(missing(filename)){
-    filename <- paste("MTR", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], obj[['samplingInterval']], sep = '_')
+    filename <- paste("MTR", '_', obj[['cruiseNumber']], '_',  obj[['eventNumber']],'_',  obj[['eventQualifier']],'_', obj[['samplingInterval']], '-', obj[['depthMin']], sep = '')
   }
   ncpath <- "./"
   ncfname <- paste(ncpath, filename, ".nc", sep = "")

@@ -35,7 +35,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   P01_name_var2 <- 'Practical salinity of the water body'
   P06_var2 <- 'SDN:P06::UUUU'
   P06_name_var2 <- 'Dimensionless'
-  std_variable_2 <- 
+  std_variable_2 <- 'sea_water_practical_salinity'
   var2max <- 50
   var2min <- 0
   

@@ -122,7 +122,7 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   
   variable_7 <- 'salinity'
   var7 <- obj@metadata$dataNamesOriginal[[variable_7]]
-  units7 <- ''
+  units7 <- '1'
   P01_VAR7 <- 'SDN:P01::PSLTZZ01'
   P01_name_var7 <- 'Practical salinity of the water body'
   P06_var7 <- 'SDN:P06::UUUU'
@@ -420,6 +420,20 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   
   
   ####variables####
+  
+  ###ancillary variables
+  
+  ncatt_put(ncout, var1, 'ancillary_variables', var1_QC)
+  ncatt_put(ncout, var2, 'ancillary_variables', var2_QC)
+  ncatt_put(ncout, var3, 'ancillary_variables', var3_QC)
+  ncatt_put(ncout, var4, 'ancillary_variables', var4_QC)
+  ncatt_put(ncout, var5, 'ancillary_variables', var5_QC)
+  ncatt_put(ncout, var6, 'ancillary_variables', var6_QC)
+  ncatt_put(ncout, var7, 'ancillary_variables', var7_QC)
+  ncatt_put(ncout, var8, 'ancillary_variables', var8_QC)
+  ncatt_put(ncout, var9, 'ancillary_variables', var9_QC)
+  ncatt_put(ncout, var10, 'ancillary_variables', var10_QC)
+  ncatt_put(ncout, var11, 'ancillary_variables', var11_QC)
   
   
   ##reference scales

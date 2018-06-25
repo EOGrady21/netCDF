@@ -37,11 +37,11 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   
   variable_2 <- 'conductivity'
   var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
-  units2 <- ''
+  units2 <- 'S/m'
   P01_VAR2 <- 'SDN:P01::CNDCST01'
   P01_name_var2 <- 'Electrical conductivity of the water body by CTD'
-  P06_var2 <- 'SDN:P06::UUUU'
-  P06_name_var2 <- 'Dimensionless'
+  P06_var2 <- 'SDN:P06::UECA'
+  P06_name_var2 <- 'Siemens per metre'
   std_variable_2 <- 'sea_water_electrical_conductivity'
     var2max <- 1000
   var2min <- -1000
@@ -59,7 +59,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   
   variable_4 <- 'sigmaTheta'
   var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
-  units4 <- ''
+  units4 <- 'kg/m^3'
   P01_VAR4 <- 'SDN:P01::SIGTPR01'
   P01_name_var4 <- 'Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm'
   P06_var4 <- 'SDN:P06::UKMC'
@@ -94,7 +94,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   
   variable_7 <- 'salinity'
   var7 <- obj@metadata$dataNamesOriginal[[variable_7]]
-  units7 <- ''
+  units7 <- '1'
   P01_VAR7 <- 'SDN:P01::PSLTZZ01'
   P01_name_var7 <- 'Practical salinity of the water body'
   P06_var7 <- 'SDN:P06::UUUU'
