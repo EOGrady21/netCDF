@@ -38,40 +38,40 @@ NCcreate <- function(obj, filename, metadata){
   ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, timedim), missval = NULL, name =  dlname, prec = "char")
   
   dlname <- variable_1
-  v1_def <- ncvar_def(var1, units1, list(dim1), FillValue, dlname, prec = pr1)
+  v1_def <- ncvar_def(var1, units1, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_2
-  v2_def <- ncvar_def(var2, units2, list(dim2), FillValue, dlname, prec = pr2)
+  v2_def <- ncvar_def(var2, units2, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_3
-  v3_def <- ncvar_def(var3, units3, list(dim3), FillValue, dlname, prec = pr3)
+  v3_def <- ncvar_def(var3, units3, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_4
-  v4_def <- ncvar_def(var4, units4, list(dim4), FillValue, dlname, prec = pr4)
+  v4_def <- ncvar_def(var4, units4, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_5
-  v5_def <- ncvar_def(var5, units5, list(dim5), FillValue, dlname, prec = pr5)
+  v5_def <- ncvar_def(var5, units5, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_6
-  v6_def <- ncvar_def(var6, units6, list(dim6), FillValue, dlname, prec = pr6)
+  v6_def <- ncvar_def(var6, units6, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_7
-  v7_def <- ncvar_def(var7, units7, list(dim7), FillValue, dlname, prec = pr7)
+  v7_def <- ncvar_def(var7, units7, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_8
-  v8_def <- ncvar_def(var8, units8, list(dim8), FillValue, dlname, prec = pr8)
+  v8_def <- ncvar_def(var8, units8, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_9
-  v9_def <- ncvar_def(var9, units9, list(dim9), FillValue, dlname, prec = pr9)
+  v9_def <- ncvar_def(var9, units9, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_10
-  v10_def <- ncvar_def(var10, units10, list(dim10), FillValue, dlname, prec = pr10)
+  v10_def <- ncvar_def(var10, units10, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_11
-  v11_def <- ncvar_def(var11, units11, list(dim11), FillValue, dlname, prec = pr11)
+  v11_def <- ncvar_def(var11, units11, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   dlname <- variable_12
-  v12_def <- ncvar_def(var12, units12, list(dim12), FillValue, dlname, prec = pr12)
+  v12_def <- ncvar_def(var12, units12, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   
   #####write out definitions to new nc file####
@@ -81,27 +81,23 @@ NCcreate <- function(obj, filename, metadata){
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
   
-  ncvar_put(ncout, v1_def, obj[[v1]])
-  ncvar_put(ncout, v2_def, obj[[v2]])
-  ncvar_put(ncout, v3_def, obj[[v3]])
-  ncvar_put(ncout, v4_def, obj[[v4]])
-  ncvar_put(ncout, v5_def, obj[[v5]])
-  ncvar_put(ncout, v6_def, obj[[v6]])
-  ncvar_put(ncout, v7_def, obj[[v7]])
-  ncvar_put(ncout, v8_def, obj[[v8]])
-  ncvar_put(ncout, v9_def, obj[[v9]])
-  ncvar_put(ncout, v10_def, obj[[v10]])
-  ncvar_put(ncout, v11_def, obj[[v11]])
-  ncvar_put(ncout, v12_def, obj[[v12]])
+  ncvar_put(ncout, v1_def, obj[[variable_1]])
+  ncvar_put(ncout, v2_def, obj[[variable_2]])
+  ncvar_put(ncout, v3_def, obj[[variable_3]])
+  ncvar_put(ncout, v4_def, obj[[variable_4]])
+  ncvar_put(ncout, v5_def, obj[[variable_5]])
+  ncvar_put(ncout, v6_def, obj[[variable_6]])
+  ncvar_put(ncout, v7_def, obj[[variable_7]])
+  ncvar_put(ncout, v8_def, obj[[variable_8]])
+  ncvar_put(ncout, v9_def, obj[[variable_9]])
+  ncvar_put(ncout, v10_def, obj[[variable_10]])
+  ncvar_put(ncout, v11_def, obj[[variable_11]])
+  ncvar_put(ncout, v12_def, obj[[variable_12]])
   
   
   
   ####metadata####
-  ####dimensions####
-  #if (type == 'timeSeriesProfile')
-  #ncatt_put(ncout, 'station', attname = 'cf_role',attval =  'timeseries_id')
-  #ncatt_put(ncout, 'time', attname = 'cf_role', attval = 'profile_id')
-  
+  ####metadata####
   ncatt_put(ncout, 'station', 'longitude', obj[['longitude']])
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
@@ -111,104 +107,111 @@ NCcreate <- function(obj, filename, metadata){
   
   ####global####
   #might be different based on instrument
-  ncatt_put(ncout, 0, 'keywords', 'Oceans > Ocean Circulation > Ocean Currents')
   
-  ncatt_put(ncout, 0, 'acknowledgment', obj[['acknowledgement']] )
-  ncatt_put(ncout, 0, 'comment', obj[['comment']])
-  ncatt_put(ncout, 0, 'cruise_description', obj[['cruise_description']])
-  ncatt_put(ncout, 0, 'date_created', obj[['date_created']])
-  ncatt_put(ncout, 0, 'keywords_vocabulary', 'GCMD Science Keywords')
+  #FROM CSV
+  # ncatt_put(ncout, 0, 'keywords', 'Oceans > Ocean Circulation > Ocean Currents')
+  # ncatt_put(ncout, 0, 'acknowledgment', obj[['acknowledgement']] )
+  # ncatt_put(ncout, 0, 'comment', obj[['comment']])
+  # ncatt_put(ncout, 0, 'cruise_description', obj[['cruise_description']])
+  # ncatt_put(ncout, 0, 'date_created', date())
+  # ncatt_put(ncout, 0, 'keywords_vocabulary', 'GCMD Science Keywords')
+  # ncatt_put(ncout, 0, 'standard_name_vocabulary', obj[['standard_name_vocabulary']])
+  # ncatt_put(ncout, 0, 'title', obj[['title']])
+  # ncatt_put(ncout, 0, 'summary', obj[['summary']])
+  # ncatt_put(ncout, 0, "naming_authority", obj[['naming_authority']])
+  # ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
+  # ncatt_put(ncout, 0, "publisher_name", obj[['publisher_name']])
+  # ncatt_put(ncout, 0, "publisher_email", obj[['publisher_email']])
+  # ncatt_put(ncout, 0, "program", obj[['description']])
+  # ncatt_put(ncout, 0, "project", obj[['project']])
+  # ncatt_put(ncout, 0, "featureType", obj[['featureType']])
+  # ncatt_put(ncout, 0, "source", obj[['source']]) 
+  
+  
+  #FROM ODF
+  ncatt_put(ncout, 0, 'inst_type', obj[['type']])
   ncatt_put(ncout, 0, 'model', obj[['model']])
-  ncatt_put(ncout, 0, 'sampling_interval', obj[['sampling_interval']])
-  ncatt_put(ncout, 0, 'standard_name_vocabulary', obj[['standard_name_vocabulary']])
-  ncatt_put(ncout, 0, 'title', obj[['title']])
+  ncatt_put(ncout, 0, 'sampling_interval', obj[['samplingInterval']])
   ncatt_put(ncout, 0, 'country_code', obj[['countryInstituteCode']])
   ncatt_put(ncout, 0, 'cruise_number', obj[['cruiseNumber']])
-  ncatt_put(ncout, 0, 'summary', obj[['summary']])
   ncatt_put(ncout, 0, "mooring_number", obj[['station']])
-  ncatt_put(ncout, 0, "naming_authority", obj[['naming_authority']])
-  ncatt_put(ncout, 0, "comment", obj[['comment']])
   ncatt_put(ncout, 0, "time_coverage_duration", (tail(obj[['time']], n = 1) - obj[['time']][[1]]))
   ncatt_put(ncout, 0, "time_coverage_duration_units", "days")
   ncatt_put(ncout, 0, "cdm_data_type", "station")
-  ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
-  ncatt_put(ncout, 0, "publisher_name", obj[['publisher_name']])
-  ncatt_put(ncout, 0, "publisher_email", obj[['publisher_email']])
-  ncatt_put(ncout, 0, "processing_history", obj[['processing_history']])
-  ncatt_put(ncout, 0, "firmware_version", obj[['firmware_version']])
-  ncatt_put(ncout, 0, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, 0, "data_type", obj[['data_type']])
-  ncatt_put(ncout, 0, "data_subtype", obj[['data_subtype']])
-  ncatt_put(ncout, 0, "coord_system", obj[['coord_system']])
+  ncatt_put(ncout, 0, "serial_number", obj[['serialNumber']])
+  ncatt_put(ncout, 0, "data_type", 'MCM')
   ncatt_put(ncout, 0, "longitude", obj[['longitude']])
   ncatt_put(ncout, 0, "latitude", obj[['latitude']])
-  ncatt_put(ncout, 0, "platform", obj[['ship']])
+  ncatt_put(ncout, 0, "platform", obj[['cruise']])
   ncatt_put(ncout, 0, "sounding", obj[['sounding']])
   ncatt_put(ncout, 0, "chief_scientist", obj[['scientist']])
-  ncatt_put(ncout, 0, "water_depth", obj[['sounding']])
-  ncatt_put(ncout, 0, "history", obj[['history']])
-  ncatt_put(ncout, 0, "experiment", obj[['experiment']])
+  ncatt_put(ncout, 0, "water_depth", obj[['waterDepth']])
   ncatt_put(ncout, 0, "cruise_name", obj[['cruise']])
   
+  #ncatt_put(ncout, 0, "data_subtype", obj[['data_subtype']])?
+  #ncatt_put(ncout, 0, "coord_system", obj[['coord_system']])?
   
-  #instrument specific metadata
-  
-  
+  #in odf header
+  # ncatt_put(ncout, 0, "processing_history", obj[['processing_history']])
+  # ncatt_put(ncout, 0, "firmware_version", obj[['firmware_version']])
+  # ncatt_put(ncout, 0, "history", obj[['history']])
+  # ncatt_put(ncout, 0, "experiment", obj[['experiment']])
+  # 
   
   
   ####variables####
   #sensor type, sensor depth and serial number for each variable
   
-  ncatt_put(ncout, var1, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var1, "sensor_type", obj[['model']])
   ncatt_put(ncout, var1, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var1, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var2, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var2, "sensor_type", obj[['model']])
   ncatt_put(ncout, var2, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var2, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var3, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var3, "sensor_type", obj[['model']])
   ncatt_put(ncout, var3, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var3, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var4, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var4, "sensor_type", obj[['model']])
   ncatt_put(ncout, var4, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var4, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var5, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var5, "sensor_type", obj[['model']])
   ncatt_put(ncout, var5, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var5, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var6, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var6, "sensor_type", obj[['model']])
   ncatt_put(ncout, var6, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var6, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var7, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var7, "sensor_type", obj[['model']])
   ncatt_put(ncout, var7, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var7, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var8, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var8, "sensor_type", obj[['model']])
   ncatt_put(ncout, var8, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var8, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var9, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var9, "sensor_type", obj[['model']])
   ncatt_put(ncout, var9, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var9, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var10, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var10, "sensor_type", obj[['model']])
   ncatt_put(ncout, var10, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var10, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var11, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var11, "sensor_type", obj[['model']])
   ncatt_put(ncout, var11, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var11, "serial_number", obj[['serial_number']])
-  ncatt_put(ncout, var12, "sensor_type", obj[['inst_type']])
+  ncatt_put(ncout, var12, "sensor_type", obj[['model']])
   ncatt_put(ncout, var12, "sensor_depth", obj[['sensor_depth']])
   ncatt_put(ncout, var12 , "serial_number", obj[['serial_number']])
   
   #generic names
-  ncatt_put(ncout, var1, "generic_name", "var1")
-  ncatt_put(ncout, var2, "generic_name", "var2")
-  ncatt_put(ncout, var3, "generic_name", "var3")
-  ncatt_put(ncout, var4, "generic_name", "var4")       
-  ncatt_put(ncout, var5, "generic_name", "var5")
-  ncatt_put(ncout, var6, "generic_name", "var6")
-  ncatt_put(ncout, var7, "generic_name", "var7")
-  ncatt_put(ncout, var8, "generic_name", "var8")
-  ncatt_put(ncout, var9, "generic_name", "var9")
-  ncatt_put(ncout, var10, "generic_name", "var10")
-  ncatt_put(ncout, var11, "generic_name", "var11")
-  ncatt_put(ncout, var12, "generic_name", "var12")
+  ncatt_put(ncout, var1, "generic_name", variable_1)
+  ncatt_put(ncout, var2, "generic_name", variable_2)
+  ncatt_put(ncout, var3, "generic_name", variable_3)
+  ncatt_put(ncout, var4, "generic_name", variable_4)       
+  ncatt_put(ncout, var5, "generic_name", variable_5)
+  ncatt_put(ncout, var6, "generic_name", variable_6)
+  ncatt_put(ncout, var7, "generic_name", variable_7)
+  ncatt_put(ncout, var8, "generic_name", variable_8)
+  ncatt_put(ncout, var9, "generic_name", variable_9)
+  ncatt_put(ncout, var10, "generic_name", variable_10)
+  ncatt_put(ncout, var11, "generic_name", variable_11)
+  ncatt_put(ncout, var12, "generic_name", variable_12)
   
   ####CF conventions & BODC standards####
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
@@ -232,12 +235,12 @@ NCcreate <- function(obj, filename, metadata){
   ncatt_put(ncout, 0, "date_modified", date())
   ncatt_put(ncout, 0, "institution", adp[['institution']])
   
-  #new requirements
-  ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
-  ncatt_put(ncout, 0, "processing_history", obj[['processing_history']])
-  ncatt_put(ncout, 0, "source", obj[['source']]) 
-  ncatt_put(ncout, 0, "publisher_name", obj[['publisher_name']])
-  ncatt_put(ncout, 0, "publisher_email", obj[['publisher_email']])
+  #new requirements # in csv
+  # ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
+  # ncatt_put(ncout, 0, "processing_history", obj[['processing_history']])
+  # ncatt_put(ncout, 0, "source", obj[['source']]) 
+  # ncatt_put(ncout, 0, "publisher_name", obj[['publisher_name']])
+  # ncatt_put(ncout, 0, "publisher_email", obj[['publisher_email']])
 
   
   
@@ -321,18 +324,18 @@ NCcreate <- function(obj, filename, metadata){
   ncatt_put(ncout, "lat", "standard_name", "latitude")
   ncatt_put(ncout, "lon", "standard_name", "longitude")
   
-  ncatt_put(ncout, var1, "standard_name", variable_1)
-  ncatt_put(ncout, var2, "standard_name", variable_2)
-  ncatt_put(ncout, var3, "standard_name", variable_3)
-  ncatt_put(ncout, var4, "standard_name", variable_4)
-  ncatt_put(ncout, var5, "standard_name", variable_5)
-  ncatt_put(ncout, var6, "standard_name", variable_6)
-  ncatt_put(ncout, var7, "standard_name", variable_7)
-  ncatt_put(ncout, var8, "standard_name", variable_8)
-  ncatt_put(ncout, var9, "standard_name", variable_9)
-  ncatt_put(ncout, var10, "standard_name", variable_10)
-  ncatt_put(ncout, var11, "standard_name", variable_11)
-  ncatt_put(ncout, var12, "standard_name", variable_12)
+  ncatt_put(ncout, var1, "standard_name", std_variable_1)
+  ncatt_put(ncout, var2, "standard_name", std_variable_2)
+  ncatt_put(ncout, var3, "standard_name", std_variable_3)
+  ncatt_put(ncout, var4, "standard_name", std_variable_4)
+  ncatt_put(ncout, var5, "standard_name", std_variable_5)
+  ncatt_put(ncout, var6, "standard_name", std_variable_6)
+  ncatt_put(ncout, var7, "standard_name", std_variable_7)
+  ncatt_put(ncout, var8, "standard_name", std_variable_8)
+  ncatt_put(ncout, var9, "standard_name", std_variable_9)
+  ncatt_put(ncout, var10, "standard_name", std_variable_10)
+  ncatt_put(ncout, var11, "standard_name", std_variable_11)
+  ncatt_put(ncout, var12, "standard_name", std_variable_12)
   
   
   ####data max and min####
