@@ -170,6 +170,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
 
   
   #FROM ODF
+  ncatt_put(ncout, 0, 'inst_type', obj[['type']])
   ncatt_put(ncout, 0, 'model', obj[['model']])
   ncatt_put(ncout, 0, 'sampling_interval', obj[['samplingInterval']])
   ncatt_put(ncout, 0, 'country_code', obj[['countryInstituteCode']])
