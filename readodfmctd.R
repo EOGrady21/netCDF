@@ -1,6 +1,6 @@
 ####readodfmctd####
 
-filename <- 'mctd/MCTD_HUD2015006_1897_11688_1800.ODF'
+filename <- 'C:/Users/ChisholmE/Documents/sample files/mctd/MCTD_HUD2015006_1897_11688_1800.ODF'
 
 #' mctd odf 2 oce
 #'

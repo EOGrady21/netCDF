@@ -2,7 +2,7 @@
 
 library(oce)
 
-filename <- 'mcm/MCM_HUD2013008_1844_602_3600.ODF'
+filename <- 'C:/Users/ChisholmE/Documents/sample files/mcm/MCM_HUD2013008_1844_602_3600.ODF'
 
 #' MCM odf 2 oce
 #'

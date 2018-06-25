@@ -1,7 +1,7 @@
 ####temperature recorder netCDF####
 
 
-obj <- read.odf('mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
+obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
 
 
 

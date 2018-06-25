@@ -2,7 +2,7 @@
 
 
 
-obj <- read.odf('ctd/CTD_BCD2017666_01_01_DN.ODF', header = 'list')
+obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_DN.ODF', header = 'list')
 
 
 #'  CTD netCDF template
