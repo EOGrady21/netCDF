@@ -4,7 +4,7 @@
 NCcreate <- function(obj, filename, metadata){
  
   #if(missing(name)){
-  #  name <- paste('MADCP', adp[['experiment']], adp[['station']], adp[['serial_number']], adp[['delta_t_sec']], sep = '_')
+  #  name <- paste('MADCP', obj[['experiment']], obj[['station']], obj[['serial_number']], obj[['delta_t_sec']], sep = '_')
   #}
   #file name and path
   ncpath <- "./"
@@ -339,63 +339,63 @@ NCcreate <- function(obj, filename, metadata){
   
   
   ####data max and min####
-  ncatt_put(ncout, var1, "data_max", max(obj[[var1]], na.rm = TRUE))
-  ncatt_put(ncout, var1, "data_min", min(obj[[var2]], na.rm = TRUE))
+  ncatt_put(ncout, var1, "data_max", max(obj[[variable_1]], na.rm = TRUE))
+  ncatt_put(ncout, var1, "data_min", min(obj[[variable_1]], na.rm = TRUE))
   ncatt_put(ncout, var1, "valid_max", var1max)
   ncatt_put(ncout, var1, "valid_min", var1min)
   
-  ncatt_put(ncout, var2, "data_max", max(obj[[var2]], na.rm = TRUE))
-  ncatt_put(ncout, var2, "data_min", min(obj[[var2]], na.rm = TRUE))
+  ncatt_put(ncout, var2, "data_max", max(obj[[variable_2]], na.rm = TRUE))
+  ncatt_put(ncout, var2, "data_min", min(obj[[variable_2]], na.rm = TRUE))
   ncatt_put(ncout, var2, "valid_max", var2max)
   ncatt_put(ncout, var2, "valid_min", var2min)
   
-  ncatt_put(ncout, var3, "data_max", max(obj[[var3]], na.rm = TRUE))
-  ncatt_put(ncout, var3, "data_min", min(obj[[var3]], na.rm = TRUE))
+  ncatt_put(ncout, var3, "data_max", max(obj[[variable_3]], na.rm = TRUE))
+  ncatt_put(ncout, var3, "data_min", min(obj[[variable_3]], na.rm = TRUE))
   ncatt_put(ncout, var3, "valid_max", var3max)
   ncatt_put(ncout, var3, "valid_min", var3min)
   
-  ncatt_put(ncout, var4, "data_max", max(obj[[var4]], na.rm = TRUE))
-  ncatt_put(ncout, var4, "data_min", min(obj[[var4]], na.rm = TRUE))
+  ncatt_put(ncout, var4, "data_max", max(obj[[variable_4]], na.rm = TRUE))
+  ncatt_put(ncout, var4, "data_min", min(obj[[variable_4]], na.rm = TRUE))
   ncatt_put(ncout, var4, "valid_max", var4max)
   ncatt_put(ncout, var4, "valid_min", var4min)
   
-  ncatt_put(ncout, var5, "data_max", max(obj[[var5]], na.rm = TRUE))
-  ncatt_put(ncout, var5, "data_min", min(obj[[var5]], na.rm = TRUE))
+  ncatt_put(ncout, var5, "data_max", max(obj[[variable_5]], na.rm = TRUE))
+  ncatt_put(ncout, var5, "data_min", min(obj[[variable_5]], na.rm = TRUE))
   ncatt_put(ncout, var5, "valid_max", var5max)
   ncatt_put(ncout, var5, "valid_min", var5min)
   
-  ncatt_put(ncout, var6, "data_max", max(obj[[var6]], na.rm = TRUE))
-  ncatt_put(ncout, var6, "data_min", min(obj[[var6]], na.rm = TRUE))
+  ncatt_put(ncout, var6, "data_max", max(obj[[variable_6]], na.rm = TRUE))
+  ncatt_put(ncout, var6, "data_min", min(obj[[variable_6]], na.rm = TRUE))
   ncatt_put(ncout, var6, "valid_max", var6max)
   ncatt_put(ncout, var6, "valid_min", var6min)
   
-  ncatt_put(ncout, var7, "data_max", max(obj[[var7]], na.rm = TRUE))
-  ncatt_put(ncout, var7, "data_min", min(obj[[var7]], na.rm = TRUE))
+  ncatt_put(ncout, var7, "data_max", max(obj[[variable_7]], na.rm = TRUE))
+  ncatt_put(ncout, var7, "data_min", min(obj[[variable_7]], na.rm = TRUE))
   ncatt_put(ncout, var7, "valid_max", var7max)
   ncatt_put(ncout, var7, "valid_min", var7min)
   
-  ncatt_put(ncout, var8, "data_max", max(obj[[var8]], na.rm = TRUE))
-  ncatt_put(ncout, var8, "data_min", min(obj[[var8]], na.rm = TRUE))
+  ncatt_put(ncout, var8, "data_max", max(obj[[variable_8]], na.rm = TRUE))
+  ncatt_put(ncout, var8, "data_min", min(obj[[variable_8]], na.rm = TRUE))
   ncatt_put(ncout, var8, "valid_max", var8max)
   ncatt_put(ncout, var8, "valid_min", var8min)
   
-  ncatt_put(ncout, var9, "data_max", max(obj[[var9]], na.rm = TRUE))
-  ncatt_put(ncout, var9, "data_min", min(obj[[var9]], na.rm = TRUE))
+  ncatt_put(ncout, var9, "data_max", max(obj[[variable_9]], na.rm = TRUE))
+  ncatt_put(ncout, var9, "data_min", min(obj[[variable_9]], na.rm = TRUE))
   ncatt_put(ncout, var9, "valid_max", var9max)
   ncatt_put(ncout, var9, "valid_min", var9min)
   
-  ncatt_put(ncout, var10, "data_max", max(obj[[var10]], na.rm = TRUE))
-  ncatt_put(ncout, var10, "data_min", min(obj[[var10]], na.rm = TRUE))
+  ncatt_put(ncout, var10, "data_max", max(obj[[variable_10]], na.rm = TRUE))
+  ncatt_put(ncout, var10, "data_min", min(obj[[variable_10]], na.rm = TRUE))
   ncatt_put(ncout, var10, "valid_max", var10max)
   ncatt_put(ncout, var10, "valid_min", var10min)
   
-  ncatt_put(ncout, var11, "data_max", max(obj[[var11]], na.rm = TRUE))
-  ncatt_put(ncout, var11, "data_min", min(obj[[var11]], na.rm = TRUE))
+  ncatt_put(ncout, var11, "data_max", max(obj[[variable_11]], na.rm = TRUE))
+  ncatt_put(ncout, var11, "data_min", min(obj[[variable_11]], na.rm = TRUE))
   ncatt_put(ncout, var11, "valid_max", var11max)
   ncatt_put(ncout, var11, "valid_min", var11min)
   
-  ncatt_put(ncout, var12, "data_max", max(obj[[var12]], na.rm = TRUE))
-  ncatt_put(ncout, var12, "data_min", min(obj[[var12]], na.rm = TRUE))
+  ncatt_put(ncout, var12, "data_max", max(obj[[variable_12]], na.rm = TRUE))
+  ncatt_put(ncout, var12, "data_min", min(obj[[variable_12]], na.rm = TRUE))
   ncatt_put(ncout, var12, "valid_max", var12max)
   ncatt_put(ncout, var12, "valid_min", var12min)
   

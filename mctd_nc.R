@@ -104,7 +104,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   
 #FILENAME
 if(missing(filename)){
-  filename <- paste("MCTD", odf[['cruiseNumber']], odf[['eventNumber']], odf[['eventQualifier']], odf[['samplingInterval']], sep = '_')
+  filename <- paste("MCTD", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], obj[['samplingInterval']], sep = '_')
 }
 ncpath <- "./"
 ncfname <- paste(ncpath, filename, ".nc", sep = "")
@@ -340,7 +340,7 @@ ncatt_put(ncout, var7, "standard_name", std_variable_7)
 
 ####data max and min####
 ncatt_put(ncout, var1, "data_max", max(obj[[variable_1]], na.rm = TRUE))
-ncatt_put(ncout, var1, "data_min", min(obj[[variable_2]], na.rm = TRUE))
+ncatt_put(ncout, var1, "data_min", min(obj[[variable_1]], na.rm = TRUE))
 ncatt_put(ncout, var1, "valid_max", var1max)
 ncatt_put(ncout, var1, "valid_min", var1min)
 
