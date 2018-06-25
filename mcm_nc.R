@@ -142,6 +142,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 'station', 'longitude', obj[['longitude']])
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
+  ncatt_put(ncout, 'station', 'cf_role', 'timeseries_id')
   ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
   ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
   ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
