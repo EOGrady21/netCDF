@@ -34,7 +34,7 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   P01_name_var1 <- 'Temperature of the water body'
   P06_var1 <- 'SDN:P06::UPAA'
   P06_name_var1 <- 'Degrees Celsius'
-  std_variable_1 <- NULL
+  std_variable_1 <- 'sea_water_temperature'
   var1max <- 100
   var1min <- -100
   

@@ -71,12 +71,12 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   
   variable_5 <- 'theta'
   var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
-  units5 <- ''
-  P01_VAR5 <- 'SDN:P01::'
-  P01_name_var5 <- ''
-  P06_var5 <- 'SDN:P06::'
-  P06_name_var5 <- ''
-  std_variable_5 <- NULL
+  units5 <- 'degrees celsius'
+  P01_VAR5 <- 'SDN:P01::POTMS601'
+  P01_name_var5 <- 'Potential temperature (IPTS-68) of the water body by CTD and computation from pressure, salinity and IPTS-68 temperature using UNESCO algorithm'
+  P06_var5 <- 'SDN:P06::UPAA'
+  P06_name_var5 <- 'Degrees Celsius'
+  std_variable_5 <- 'sea_water_potential_temperature'
     var5max <- 1000
   var5min <- -1000
   

@@ -1,5 +1,7 @@
 #####mcm netCDF####
 
+obj <- read.odf('mcm/MCM_HUD2013008_1844_602_3600.ODF', header = 'list')
+
 #' Current Meter netCDF template
 #'
 #' @param obj an odf object from oce which contains mcm data
@@ -18,19 +20,19 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   
   variable_1 <- 'temperature'
   var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-  units1 <- obj@metadata$units[[variable_1]]$scale
+  units1 <- 'degrees celsius'
   P01_VAR1 <- 'SDN:P01::TEMPPR01'
   P01_name_var1 <- 'Temperature of the water body'
   P06_var1 <- 'SDN:P06::UPAA'
   P06_name_var1 <- 'Degrees Celsius'
-  std_variable_1 <- 'Temperature'
+  std_variable_1 <- NULL
   var1max <- 100
   var1min <- -100
   
   
   variable_2 <- 'salinity'
   var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
-  units2 <- obj@metadata$units[[variable_2]]$scale
+  units2 <- '1'
   P01_VAR2 <- 'SDN:P01::PSLTZZ01'
   P01_name_var2 <- 'Practical salinity of the water body'
   P06_var2 <- 'SDN:P06::UUUU'
@@ -41,7 +43,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   
   variable_3 <- 'pressure'
   var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
-  units3 <- obj@metadata$units[[variable_3]]$scale
+  units3 <- 'decibars'
   P01_VAR3 <- 'SDN:P01::PRESPR01'
   P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
   P06_var3 <- 'SDN:P06::UPDB'
@@ -52,24 +54,24 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   
   variable_4 <- 'directionTrue'
   var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
-  units4 <- obj@metadata$units[[variable_4]]$scale
+  units4 <- 'degrees'
   P01_VAR4 <- 'SDN:P01::LCDAZZ01'
   P01_name_var4 <- 'Current direction in the water body'
   P06_var4 <- 'SDN:P06::UAAA'
   P06_name_var4 <- 'Degrees'
-  std_variable_4 <- 
+  std_variable_4 <- NULL
   var4max <- 1000
   var4min <- -1000
   
   
   variable_5 <- 'speedHorizontal'
   var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
-  units5 <- obj@metadata$units[[variable_5]]$scale
+  units5 <- 'm/s'
   P01_VAR5 <- 'SDN:P01::LCSAZZ01'
   P01_name_var5 <- 'Current speed (Eulerian) in the water body'
   P06_var5 <- 'SDN:P06::ULAA'
   P06_name_var5 <- 'Metres per second'
-  std_variable_5 <- 
+  std_variable_5 <- NULL
   var5max <- 1000
   var5min <- -1000
   
