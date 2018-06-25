@@ -42,7 +42,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   P01_name_var2 <- 'Electrical conductivity of the water body by CTD'
   P06_var2 <- 'SDN:P06::UUUU'
   P06_name_var2 <- 'Dimensionless'
-  std_variable_2 <- NULL
+  std_variable_2 <- 'sea_water_electrical_conductivity'
     var2max <- 1000
   var2min <- -1000
   
@@ -99,7 +99,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   P01_name_var7 <- 'Practical salinity of the water body'
   P06_var7 <- 'SDN:P06::UUUU'
   P06_name_var7 <- 'Dimensionless'
-  std_variable_7 <- NULL
+  std_variable_7 <- 'sea_water_practical_salinity'
     var7max <- 1000
   var7min <- -1000
   
