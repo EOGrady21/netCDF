@@ -1,6 +1,8 @@
 #####mcm netCDF####
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mcm/MCM_HUD2013008_1844_602_3600.ODF', header = 'list')
+metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_METADATA.csv')
+
 
 #' Current Meter netCDF template
 #'

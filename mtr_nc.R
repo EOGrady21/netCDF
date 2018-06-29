@@ -2,7 +2,7 @@
 
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
-
+metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MTR_SAMPLE_METADATA.csv')
 
 
 #' Moored temperature recorder netCDF template

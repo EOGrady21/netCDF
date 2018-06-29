@@ -1,7 +1,7 @@
 ####mctd NC template####
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mctd/MCTD_HUD2015006_1897_11688_1800.ODF', header = 'list')
-
+metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCTD_SAMPLE_METADATA.csv')
 
 #' Moored CTD netCDF template
 #'
