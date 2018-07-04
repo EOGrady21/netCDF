@@ -24,16 +24,48 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
   
-  variable_1 <- 'temperature'
-  var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-  units1 <- 'Degrees Celsius'
-  P01_VAR1 <- 'SDN:P01::TEMPPR01'
-  P01_name_var1 <- 'Temperature of the water body'
-  P06_var1 <- 'SDN:P06::UPAA'
-  P06_name_var1 <- 'Degrees Celsius'
-  std_variable_1 <- NULL
-  var1max <- 100
-  var1min <- -100
+  v <- names(obj@data)
+  var <- obj@metadata$dataNamesOriginal
+  
+  for ( i in 1:length(var)){
+    var[[i]] <- as.P01(var[[i]])
+  }
+  i <- 1
+  
+  for ( vv in var ){
+    
+    eval(parse(text = paste0("variable_", i, "<- '" , v[[i]], "'")))
+    eval(parse(text= paste0("var",i," <-'", vv$gf3,"'")))
+    eval(parse(text = paste0("units", i, " <-'", vv$units, "'")))
+    eval(parse(text = paste0('P01_VAR', i," <- paste0('SDN:P01::', vv$P01)" )))
+    eval(parse(text = paste0('P01_name_var', i," <-'" , vv$P01name , "'")))
+    eval(parse(text = paste0('P06_var', i, "<-'" , vv$P06 , "'")))
+    eval(parse(text = paste0('P06_name_var', i,  "<- '" , vv$P06name , "'")))
+    eval(parse(text = paste0('var', i, 'max <-', -10000)))
+    eval(parse(text = paste0('var', i, 'min <-' , 10000)))
+    eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
+    
+    #check if variable also has quality flag
+    if (v[[i]] %in% names(obj[['flags']])) {
+      eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))
+      eval(parse(text = paste0("variable", i , "_QC <- 'quality flag for " , v[[i]], "'")))
+    }
+    i <- i+1
+    
+    
+  }
+  
+  
+  # variable_1 <- 'temperature'
+  # var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
+  # units1 <- 'Degrees Celsius'
+  # P01_VAR1 <- 'SDN:P01::TEMPPR01'
+  # P01_name_var1 <- 'Temperature of the water body'
+  # P06_var1 <- 'SDN:P06::UPAA'
+  # P06_name_var1 <- 'Degrees Celsius'
+  # std_variable_1 <- NULL
+  # var1max <- 100
+  # var1min <- -100
   
   
   #FILENAME

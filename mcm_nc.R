@@ -19,64 +19,95 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
   
+  v <- names(obj@data)
+  var <- obj@metadata$dataNamesOriginal
   
-  variable_1 <- 'temperature'
-  var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-  units1 <- 'degrees celsius'
-  P01_VAR1 <- 'SDN:P01::TEMPPR01'
-  P01_name_var1 <- 'Temperature of the water body'
-  P06_var1 <- 'SDN:P06::UPAA'
-  P06_name_var1 <- 'Degrees Celsius'
-  std_variable_1 <- NULL
-  var1max <- 100
-  var1min <- -100
+  for ( i in 1:length(var)){
+    var[[i]] <- as.P01(var[[i]])
+  }
+  i <- 1
   
-  
-  variable_2 <- 'salinity'
-  var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
-  units2 <- '1'
-  P01_VAR2 <- 'SDN:P01::PSLTZZ01'
-  P01_name_var2 <- 'Practical salinity of the water body'
-  P06_var2 <- 'SDN:P06::UUUU'
-  P06_name_var2 <- 'Dimensionless'
-  std_variable_2 <- 'sea_water_practical_salinity'
-  var2max <- 50
-  var2min <- 0
-  
-  variable_3 <- 'pressure'
-  var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
-  units3 <- 'decibars'
-  P01_VAR3 <- 'SDN:P01::PRESPR01'
-  P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
-  P06_var3 <- 'SDN:P06::UPDB'
-  P06_name_var3 <- 'Decibars'
-  std_variable_3 <- 'sea_water_pressure'
-  var3max <- -1000
-  var3min <- 1000
-  
-  variable_4 <- 'directionTrue'
-  var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
-  units4 <- 'degrees'
-  P01_VAR4 <- 'SDN:P01::LCDAZZ01'
-  P01_name_var4 <- 'Current direction in the water body'
-  P06_var4 <- 'SDN:P06::UAAA'
-  P06_name_var4 <- 'Degrees'
-  std_variable_4 <- NULL
-  var4max <- 1000
-  var4min <- -1000
+  for ( vv in var ){
+    
+    eval(parse(text = paste0("variable_", i, "<- '" , v[[i]], "'")))
+    eval(parse(text= paste0("var",i," <-'", vv$gf3,"'")))
+    eval(parse(text = paste0("units", i, " <-'", vv$units, "'")))
+    eval(parse(text = paste0('P01_VAR', i," <- paste0('SDN:P01::', vv$P01)" )))
+    eval(parse(text = paste0('P01_name_var', i," <-'" , vv$P01name , "'")))
+    eval(parse(text = paste0('P06_var', i, "<-'" , vv$P06 , "'")))
+    eval(parse(text = paste0('P06_name_var', i,  "<- '" , vv$P06name , "'")))
+    eval(parse(text = paste0('var', i, 'max <-', -10000)))
+    eval(parse(text = paste0('var', i, 'min <-' , 10000)))
+    eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
+    
+    #check if variable also has quality flag
+    if (v[[i]] %in% names(obj[['flags']])) {
+      eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))
+      eval(parse(text = paste0("variable", i , "_QC <- 'quality flag for " , v[[i]], "'")))
+    }
+    i <- i+1
+    
+    
+  }
   
   
-  variable_5 <- 'speedHorizontal'
-  var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
-  units5 <- 'm/s'
-  P01_VAR5 <- 'SDN:P01::LCSAZZ01'
-  P01_name_var5 <- 'Current speed (Eulerian) in the water body'
-  P06_var5 <- 'SDN:P06::ULAA'
-  P06_name_var5 <- 'Metres per second'
-  std_variable_5 <- NULL
-  var5max <- 1000
-  var5min <- -1000
-  
+  # variable_1 <- 'temperature'
+  # var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
+  # units1 <- 'degrees celsius'
+  # P01_VAR1 <- 'SDN:P01::TEMPPR01'
+  # P01_name_var1 <- 'Temperature of the water body'
+  # P06_var1 <- 'SDN:P06::UPAA'
+  # P06_name_var1 <- 'Degrees Celsius'
+  # std_variable_1 <- NULL
+  # var1max <- 100
+  # var1min <- -100
+  # 
+  # 
+  # variable_2 <- 'salinity'
+  # var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
+  # units2 <- '1'
+  # P01_VAR2 <- 'SDN:P01::PSLTZZ01'
+  # P01_name_var2 <- 'Practical salinity of the water body'
+  # P06_var2 <- 'SDN:P06::UUUU'
+  # P06_name_var2 <- 'Dimensionless'
+  # std_variable_2 <- 'sea_water_practical_salinity'
+  # var2max <- 50
+  # var2min <- 0
+  # 
+  # variable_3 <- 'pressure'
+  # var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
+  # units3 <- 'decibars'
+  # P01_VAR3 <- 'SDN:P01::PRESPR01'
+  # P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
+  # P06_var3 <- 'SDN:P06::UPDB'
+  # P06_name_var3 <- 'Decibars'
+  # std_variable_3 <- 'sea_water_pressure'
+  # var3max <- -1000
+  # var3min <- 1000
+  # 
+  # variable_4 <- 'directionTrue'
+  # var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
+  # units4 <- 'degrees'
+  # P01_VAR4 <- 'SDN:P01::LCDAZZ01'
+  # P01_name_var4 <- 'Current direction in the water body'
+  # P06_var4 <- 'SDN:P06::UAAA'
+  # P06_name_var4 <- 'Degrees'
+  # std_variable_4 <- NULL
+  # var4max <- 1000
+  # var4min <- -1000
+  # 
+  # 
+  # variable_5 <- 'speedHorizontal'
+  # var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
+  # units5 <- 'm/s'
+  # P01_VAR5 <- 'SDN:P01::LCSAZZ01'
+  # P01_name_var5 <- 'Current speed (Eulerian) in the water body'
+  # P06_var5 <- 'SDN:P06::ULAA'
+  # P06_name_var5 <- 'Metres per second'
+  # std_variable_5 <- NULL
+  # var5max <- 1000
+  # var5min <- -1000
+  # 
   
   #FILENAME
   if(missing(filename)){
