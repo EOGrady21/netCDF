@@ -3,6 +3,7 @@
 
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_DN.ODF', header = 'list')
+upcast <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_UP.ODF', header = 'list')
 metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
 
 #'  CTD netCDF template
@@ -22,182 +23,270 @@ metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_META
 #' @examples
 #' 
 
-ctd_nc <- function(obj, metadata, filename = NULL){
+ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   
+  if (!missing(metadata)) {
+    metad <- read.csv(metadata, header = TRUE)
+    
+    mn <- as.character(metad[,1])
+    mv <- as.character(metad[,2])
+    
+    
+    md <- as.list(mv)
+    names(md) <- mn
+  }
   
-  #11 variables
+  ###input variables into spreadsheet###
+  # #check which variables are included
+  # lines <-  grep(names(md), pattern = 'var')
+  # 
+  # vr <- NULL
+  # for( l in lines){
+  #   vr[[l]] <- md[[l]]
+  #   }
+  # v <- NULL
+  # for( n in 1:length(lines)){
+  #   v[[n]] <- vr[[lines[[n]]]]
+  # }
+  # 
+  # numvar <- length(lines)
+  # 
+  # 
+  # ####checks
+  # 
+  # for( n in 1:length(v)){
+  #  yn <-  v[[n]] %in%(names(obj@data))
+  #     if (yn == FALSE){
+  #       warning(paste(v[[n]], "  not recognized in chosen CTD data!"))
+  #       stop()
+  #     }
+  # }
+  ##OR##
+  #input varaibles automatically from obj@data
   
-  variable_1 <- 'temperature'
-  var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-  units1 <- 'Degrees Celsius'
-  P01_VAR1 <- 'SDN:P01::TEMPPR01'
-  P01_name_var1 <- 'Temperature of the water body'
-  P06_var1 <- 'SDN:P06::UPAA'
-  P06_name_var1 <- 'Degrees Celsius'
-  std_variable_1 <- 'sea_water_temperature'
-  var1max <- 100
-  var1min <- -100
+  v <- names(obj@data)
+  var <- obj@metadata$dataNamesOriginal
   
-  var1_QC <- 'TEMP_QC'
-  variable1_QC <- paste('quality flag for', variable_1, sep = ' ')
+  for ( i in 1:length(var)){
+    var[[i]] <- as.P01(var[[i]])
+  }
+  i <- 1
   
+  for ( vv in var ){
+   
+    eval(parse(text = paste0("variable_", i, "<- '" , v[[i]], "'")))
+    eval(parse(text= paste0("var",i," <-'", vv$gf3,"'")))
+    eval(parse(text = paste0("units", i, " <-'", vv$units, "'")))
+    eval(parse(text = paste0('P01_VAR', i," <- paste0('SDN:P01::', vv$P01)" )))
+    eval(parse(text = paste0('P01_name_var', i," <-'" , vv$P01name , "'")))
+    eval(parse(text = paste0('P06_var', i, "<-'" , vv$P06 , "'")))
+    eval(parse(text = paste0('P06_name_var', i,  "<- '" , vv$P06name , "'")))
+    eval(parse(text = paste0('var', i, 'max <-', -10000)))
+    eval(parse(text = paste0('var', i, 'min <-' , 10000)))
+    eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
+
+    #check if variable also has quality flag
+   if (v[[i]] %in% names(obj[['flags']])) {
+    eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))
+    eval(parse(text = paste0("variable", i , "_QC <- 'quality flag for " , v[[i]], "'")))
+   }
+    i <- i+1
+    
+    
+  }
   
-  
-  variable_2 <- 'conductivity'
-  var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
-  units2 <- 'S/m'
-  P01_VAR2 <- 'SDN:P01::CNDCST01'
-  P01_name_var2 <- 'Electrical conductivity of the water body by CTD'
-  P06_var2 <- 'SDN:P06::UUUU'
-  P06_name_var2 <- 'Dimensionless'
-  std_variable_2 <- 'sea_water_electrical_conductivity'
-  var2max <- 1000
-  var2min <- -1000
-  
-  var2_QC <- 'CRAT_QC'
-  variable2_QC <- paste('quality flag for', variable_2, sep = ' ')
-  
-  
-  variable_3 <- 'pressure'
-  var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
-  units3 <- 'decibars'
-  P01_VAR3 <- 'SDN:P01::PRESPR01'
-  P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
-  P06_var3 <- 'SDN:P06::UPDB'
-  P06_name_var3 <- 'Decibars'
-  std_variable_3 <- 'sea_water_pressure'
-  var3max <- 1000
-  var3min <- -1000
-  
-  var3_QC <- 'PRES_QC'
-  variable3_QC <- paste('quality flag for', variable_3, sep = ' ')
-  
-  
-  variable_4 <- 'sigmaTheta'
-  var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
-  units4 <- 'kg/m^3'
-  P01_VAR4 <- 'SDN:P01::SIGTPR01'
-  P01_name_var4 <- 'Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm'
-  P06_var4 <- 'SDN:P06::UKMC'
-  P06_name_var4 <- 'Kilograms per cubic metre'
-  std_variable_4 <- 'sea_water_sigma_theta'
-  var4max <- 1000
-  var4min <- -1000
-  
-  var4_QC <- 'SIGP_QC'
-  variable4_QC <- paste('quality flag for', variable_4, sep = ' ')
-  
-  
-  
-  variable_5 <- 'scan'
-  var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
-  units5 <- 'counts'
-  P01_VAR5 <- 'SDN:P01::'
-  P01_name_var5 <- ''
-  P06_var5 <- 'SDN:P06::'
-  P06_name_var5 <- ''
+  # #11 variables
+  # ####ALWAYS INCLUDED####
+  # variable_1 <- 'temperature'
+  # var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
+  # units1 <- 'Degrees Celsius'
+  # P01_VAR1 <- 'SDN:P01::TEMPPR01'
+  # P01_name_var1 <- 'Temperature of the water body'
+  # P06_var1 <- 'SDN:P06::UPAA'
+  # P06_name_var1 <- 'Degrees Celsius'
+   std_variable_1 <- 'sea_water_temperature'
+  # var1max <- 100
+  # var1min <- -100
+  # 
+  # var1_QC <- 'TEMP_QC'
+  # variable1_QC <- paste('quality flag for', variable_1, sep = ' ')
+  # 
+  # 
+  # 
+  # variable_2 <- 'conductivity'
+  # var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
+  # units2 <- 'S/m'
+  # P01_VAR2 <- 'SDN:P01::CNDCST01'
+  # P01_name_var2 <- 'Electrical conductivity of the water body by CTD'
+  # P06_var2 <- 'SDN:P06::UUUU'
+  # P06_name_var2 <- 'Dimensionless'
+   std_variable_2 <- 'sea_water_electrical_conductivity'
+  # var2max <- 1000
+  # var2min <- -1000
+  # 
+  # var2_QC <- 'CRAT_QC'
+  # variable2_QC <- paste('quality flag for', variable_2, sep = ' ')
+  # 
+  # 
+  # variable_3 <- 'pressure'
+  # var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
+  # units3 <- 'decibars'
+  # P01_VAR3 <- 'SDN:P01::PRESPR01'
+  # P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
+  # P06_var3 <- 'SDN:P06::UPDB'
+  # P06_name_var3 <- 'Decibars'
+   std_variable_3 <- 'sea_water_pressure'
+  # var3max <- 1000
+  # var3min <- -1000
+  # 
+  # var3_QC <- 'PRES_QC'
+  # variable3_QC <- paste('quality flag for', variable_3, sep = ' ')
+  # 
+  # ####VARIABLES####
+  # variable_4 <- 'sigmaTheta'
+  # var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
+  # units4 <- 'kg/m^3'
+  # P01_VAR4 <- 'SDN:P01::SIGTPR01'
+  # P01_name_var4 <- 'Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm'
+  # P06_var4 <- 'SDN:P06::UKMC'
+  # P06_name_var4 <- 'Kilograms per cubic metre'
+   std_variable_4 <- 'sea_water_sigma_theta'
+  # var4max <- 1000
+  # var4min <- -1000
+  # 
+  # var4_QC <- 'SIGP_QC'
+  # variable4_QC <- paste('quality flag for', variable_4, sep = ' ')
+  # 
+  # 
+  # 
+  # variable_5 <- 'scan'
+  # var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
+  # units5 <- 'counts'
+  # P01_VAR5 <- 'SDN:P01::'
+  # P01_name_var5 <- ''
+  # P06_var5 <- 'SDN:P06::'
+  # P06_name_var5 <- ''
   std_variable_5 <- NULL
-  var5max <- 1000000
-  var5min <- -1000000
-  
-  var5_QC <- 'CNTR_QC'
-  variable5_QC <- paste('quality flag for', variable_5, sep = ' ')
-  
-  
-  variable_6 <- 'oxygen'
-  var6 <- obj@metadata$dataNamesOriginal[[variable_6]]
-  units6 <- 'ml/L'
-  P01_VAR6 <- 'SDN:P01::DOXYCZ01'
-  P01_name_var6 <- 'Concentration of oxygen {O2 CAS 7782-44-7} per unit volume of the water body [dissolved plus reactive particulate phase] by in-situ sensor and calibration against sample data'
-  P06_var6 <- 'SDN:P06::UMLL'
-  P06_name_var6 <- '	Millilitres per litre'
+  # var5max <- 1000000
+  # var5min <- -1000000
+  # 
+  # var5_QC <- 'CNTR_QC'
+  # variable5_QC <- paste('quality flag for', variable_5, sep = ' ')
+  # 
+  # 
+  # variable_6 <- 'oxygen'
+  # var6 <- obj@metadata$dataNamesOriginal[[variable_6]]
+  # units6 <- 'ml/L'
+  # P01_VAR6 <- 'SDN:P01::DOXYCZ01'
+  # P01_name_var6 <- 'Concentration of oxygen {O2 CAS 7782-44-7} per unit volume of the water body [dissolved plus reactive particulate phase] by in-situ sensor and calibration against sample data'
+  # P06_var6 <- 'SDN:P06::UMLL'
+  # P06_name_var6 <- '	Millilitres per litre'
   std_variable_6 <- NULL
-  var6max <- 1000
-  var6min <- -1000
+  # var6max <- 1000
+  # var6min <- -1000
+  # 
+  # var6_QC <- 'DOXY_QC'
+  # variable6_QC <- paste('quality flag for', variable_6, sep = ' ')
+  # 
+  # 
+  # 
+  # variable_7 <- 'salinity'
+  # var7 <- obj@metadata$dataNamesOriginal[[variable_7]]
+  # units7 <- '1'
+  # P01_VAR7 <- 'SDN:P01::PSLTZZ01'
+  # P01_name_var7 <- 'Practical salinity of the water body'
+  # P06_var7 <- 'SDN:P06::UUUU'
+  # P06_name_var7 <- 'Dimensionless'
+   std_variable_7 <- 'sea_water_practical_salinity'
+  # var7max <- 1000
+  # var7min <- -1000
+  # 
+  # var7_QC <- 'PSAL_QC'
+  # variable7_QC <- paste('quality flag for', variable_7, sep = ' ')
+  # 
+  # 
+  # variable_8 <- 'oxygenVoltage'
+  # var8 <- obj@metadata$dataNamesOriginal[[variable_8]]
+  # units8 <- 'V'
+  # P01_VAR8 <- 'SDN:P01::OXYOCPVL'
+  # P01_name_var8 <- 'Voltage of instrument output by oxygen sensor'
+  # P06_var8 <- 'SDN:P06::UVLT'
+  # P06_name_var8 <- 'Volts'
+   std_variable_8 <- NULL
+  # var8max <- 1000
+  # var8min <- -1000
+  # 
+  # var8_QC <- 'OXYV_QC'
+  # variable8_QC <- paste('quality flag for', variable_8, sep = ' ')
+  # 
+  # 
+  # variable_9 <- 'fluorometer'
+  # var9 <- obj@metadata$dataNamesOriginal[[variable_9]]
+  # units9 <- 'mg/m^3'
+  # P01_VAR9 <- 'SDN:P01::FLUOZZZZ'
+  # P01_name_var9 <- 'Fluorescence of the water body'
+  # P06_var9 <- 'SDN:P06::UMMC'
+  # P06_name_var9 <- 'Milligrams per cubic metre'
+   std_variable_9 <- NULL
+  # var9max <- 1000
+  # var9min <- -1000
+  # 
+  # var9_QC <- 'FLOR_QC'
+  # variable9_QC <- paste('quality flag for', variable_9, sep = ' ')
+  # 
+  # 
+  # variable_10 <- 'par'
+  # var10 <- "umol/m^2/s"
+  # units10 <- ''
+  # P01_VAR10 <- 'SDN:P01::'
+  # P01_name_var10 <- ''
+  # P06_var10 <- 'SDN:P06::'
+  # P06_name_var10 <- ''
+   std_variable_10 <- 'downwelling_photosynthetic_radiance_in_sea_water'
+  # var10max <- 1000
+  # var10min <- -1000
+  # 
+  # var10_QC <- 'PSAR_QC'
+  # variable10_QC <- paste('quality flag for', variable_10, sep = ' ')
+  # 
+  # 
+  # variable_11 <- 'scan2'
+  # var11 <- obj@metadata$dataNamesOriginal[[variable_11]]
+  # units11 <- 'counts'
+  # P01_VAR11 <- 'SDN:P01::'
+  # P01_name_var11 <- ''
+  # P06_var11 <- 'SDN:P06::'
+  # P06_name_var11 <- ''
+   std_variable_11 <- NULL
+  # var11max <- 1000
+  # var11min <- -1000
+  # 
+  # var11_QC <- 'CNTR_02_QC'
+  # variable11_QC <- paste('quality flag for', variable_11, sep = ' ')
+  # 
+  # 
   
-  var6_QC <- 'DOXY_QC'
-  variable6_QC <- paste('quality flag for', variable_6, sep = ' ')
+   
+   ####combine up and down cast####
+   if (!is.null(upcast)) {
+     if (obj[['startTime']] == upcast[['startTime']]) {
+       #if (names(upcast@data) == names(obj@data)) {
+         for (vv in var) {
+           for (i in 1: length(upcast@data[[1]]))
+             eval(parse(text = paste0("obj[['", v, "']][length(obj[['", v, "']]) + 1] <- upcast[['", v, "']][", i, "]")))
+         }
+       # } else{
+       #   warning('UPCAST VARIABLES DO NOT MATCH DOWNCAST!')
+       # }
+       
+     } else{
+       warning('UPCAST START TIME DOES NOT MATCH DOWNCAST START TIME!')
+       stop()
+     }
+   }
+   
   
-  
-  
-  variable_7 <- 'salinity'
-  var7 <- obj@metadata$dataNamesOriginal[[variable_7]]
-  units7 <- '1'
-  P01_VAR7 <- 'SDN:P01::PSLTZZ01'
-  P01_name_var7 <- 'Practical salinity of the water body'
-  P06_var7 <- 'SDN:P06::UUUU'
-  P06_name_var7 <- 'Dimensionless'
-  std_variable_7 <- 'sea_water_practical_salinity'
-  var7max <- 1000
-  var7min <- -1000
-  
-  var7_QC <- 'PSAL_QC'
-  variable7_QC <- paste('quality flag for', variable_7, sep = ' ')
-  
-  
-  variable_8 <- 'oxygenVoltage'
-  var8 <- obj@metadata$dataNamesOriginal[[variable_8]]
-  units8 <- 'V'
-  P01_VAR8 <- 'SDN:P01::OXYOCPVL'
-  P01_name_var8 <- 'Voltage of instrument output by oxygen sensor'
-  P06_var8 <- 'SDN:P06::UVLT'
-  P06_name_var8 <- 'Volts'
-  std_variable_8 <- NULL
-  var8max <- 1000
-  var8min <- -1000
-  
-  var8_QC <- 'OXYV_QC'
-  variable8_QC <- paste('quality flag for', variable_8, sep = ' ')
-  
-  
-  variable_9 <- 'fluorometer'
-  var9 <- obj@metadata$dataNamesOriginal[[variable_9]]
-  units9 <- 'mg/m^3'
-  P01_VAR9 <- 'SDN:P01::FLUOZZZZ'
-  P01_name_var9 <- 'Fluorescence of the water body'
-  P06_var9 <- 'SDN:P06::UMMC'
-  P06_name_var9 <- 'Milligrams per cubic metre'
-  std_variable_9 <- NULL
-  var9max <- 1000
-  var9min <- -1000
-  
-  var9_QC <- 'FLOR_QC'
-  variable9_QC <- paste('quality flag for', variable_9, sep = ' ')
-  
-  
-  variable_10 <- 'par'
-  var10 <- obj@metadata$dataNamesOriginal[[variable_10]]
-  units10 <- ''
-  P01_VAR10 <- 'SDN:P01::'
-  P01_name_var10 <- ''
-  P06_var10 <- 'SDN:P06::'
-  P06_name_var10 <- ''
-  std_variable_10 <- 'downwelling_photosynthetic_radiance_in_sea_water'
-  var10max <- 1000
-  var10min <- -1000
-  
-  var10_QC <- 'PSAR_QC'
-  variable10_QC <- paste('quality flag for', variable_10, sep = ' ')
-  
-  
-  variable_11 <- 'scan2'
-  var11 <- obj@metadata$dataNamesOriginal[[variable_11]]
-  units11 <- 'counts'
-  P01_VAR11 <- 'SDN:P01::'
-  P01_name_var11 <- ''
-  P06_var11 <- 'SDN:P06::'
-  P06_name_var11 <- ''
-  std_variable_11 <- NULL
-  var11max <- 1000
-  var11min <- -1000
-  
-  var11_QC <- 'CNTR_02_QC'
-  variable11_QC <- paste('quality flag for', variable_11, sep = ' ')
-  
-  
-  
-  
-  ####filename
+  ####filename####
   if(missing(filename)){
     filename <- paste("CTD", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], 'DN', sep = '_')
   }
@@ -217,6 +306,7 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   FillValue <- 1e35
   #####define variables####
   
+
   dlname <- 'lon'
   lon_def <- ncvar_def(longname= "longitude", units = 'degrees_east', dim = stationdim, name = dlname, prec = 'double')
   
@@ -295,6 +385,7 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   
   
   #####write out definitions to new nc file####
+
   ncout <-
     nc_create(
       ncfname,
@@ -328,7 +419,6 @@ ctd_nc <- function(obj, metadata, filename = NULL){
       ),
       force_v4 = TRUE
     )
-  
   
   
   ncvar_put(ncout, lon_def, obj[['longitude']])
@@ -407,6 +497,9 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "chief_scientist", obj[['scientist']])
   ncatt_put(ncout, 0, "water_depth", obj[['waterDepth']])
   ncatt_put(ncout, 0, "cruise_name", obj[['cruise']])
+  ncatt_put(ncout, 0, "cruise_description", obj@metadata$header$CRUISE_HEADER$CRUISE_DESCRIPTION)
+  ncatt_put(ncout, 0, "program", obj@metadata$header$CRUISE_HEADER$CRUISE_DESCRIPTION)
+  
   
   #ncatt_put(ncout, 0, "data_subtype", obj[['data_subtype']])?
   #ncatt_put(ncout, 0, "coord_system", obj[['coord_system']])?
@@ -712,20 +805,13 @@ ctd_nc <- function(obj, metadata, filename = NULL){
   
   #metadata from spreadsheet
   
-  if (!missing(metadata)) {
-    metad <- read.csv(metadata, header = TRUE)
-    
-    mn <- as.character(metad[,1])
-    mv <- as.character(metad[,2])
-    
-    
-    md <- as.list(mv)
-    names(md) <- mn
+  #avoid printing variables as metadata
+ 
     
     for (m in seq_along(md)) {
       ncatt_put(ncout, 0, names(md)[m], md[[m]])
     }
-  }
+  
   ####nc close####
   nc_close(ncout)
   
