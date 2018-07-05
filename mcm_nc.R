@@ -2,7 +2,7 @@
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mcm/MCM_HUD2013008_1844_602_3600.ODF', header = 'list')
 metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_METADATA.csv')
-
+#source('asP01.R')
 
 #' Current Meter netCDF template
 #'
@@ -18,7 +18,7 @@ metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_META
 mcm_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
-  source('asP01.R')
+  
   
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
@@ -409,6 +409,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
     hist[[i]] <- unlist(head[[hi[[1]][i]]])
   }
   histo <- unlist(hist)
+  histor <- NULL
   for (i in 1:length(histo)){
     histor[[i]] <- paste(names(histo)[[i]],":", histo[[i]])
   }

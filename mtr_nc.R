@@ -260,6 +260,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
       hist[[i]] <- unlist(head[[hi[[1]][i]]])
     }
     histo <- unlist(hist)
+    histor <- NULL
     for (i in 1:length(histo)){
       histor[[i]] <- paste(names(histo)[[i]],":", histo[[i]])
     }
