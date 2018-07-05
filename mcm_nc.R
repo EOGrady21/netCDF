@@ -18,6 +18,7 @@ metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_META
 mcm_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
+  source('asP01.R')
   
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
@@ -398,6 +399,28 @@ mcm_nc <- function(obj, metadata, filename = NULL){
     }
   }
   
+  
+  ####preserve ODF history header####
+  if (!is.null(obj@metadata$header)){
+  head <- obj@metadata$header
+  hi <- list(grep(names(head), pattern = "HISTORY"))
+  hist <- NULL
+  for ( i in 1:length(hi[[1]])){
+    hist[[i]] <- unlist(head[[hi[[1]][i]]])
+  }
+  histo <- unlist(hist)
+  for (i in 1:length(histo)){
+    histor[[i]] <- paste(names(histo)[[i]],":", histo[[i]])
+  }
+  
+  history <- unlist(histor)
+  
+  for (i in 1:length(history)){
+  ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
+  }
+  
+  
+  }
   ####nc close####
   nc_close(ncout)
   
