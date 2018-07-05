@@ -33,6 +33,7 @@ NCcreate <- function(obj, filename, metadata){
     
     
   }
+  numvar <- length(var)
   
   #if(missing(name)){
   #  name <- paste('MADCP', obj[['experiment']], obj[['station']], obj[['serial_number']], obj[['delta_t_sec']], sep = '_')
