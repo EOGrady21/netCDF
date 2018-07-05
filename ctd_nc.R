@@ -271,9 +271,12 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
    if (!is.null(upcast)) {
      if (obj[['startTime']] == upcast[['startTime']]) {
        #if (names(upcast@data) == names(obj@data)) {
-         for (vv in var) {
-           for (i in 1: length(upcast@data[[1]]))
-             eval(parse(text = paste0("obj[['", v, "']][length(obj[['", v, "']]) + 1] <- upcast[['", v, "']][", i, "]")))
+         for (l in 1:length(v)) {
+           for (i in 1: length(upcast@data[[1]])){
+             eval(parse(text = paste0("obj[['", v[[l]], "']][length(obj[['", v[[l]], "']]) + 1] <- upcast[['", v[[l]], "']][", i, "]")))
+ #add flags
+              eval(parse(text = paste0("obj@metadata$flags[['", v[[l]], "']][length(obj@metadata$flags[['", v[[l]], "']]) +1] <- upcast@metadata$flags[['", v[[l]], "']][", i, "]")))
+           }
          }
        # } else{
        #   warning('UPCAST VARIABLES DO NOT MATCH DOWNCAST!')
@@ -285,7 +288,6 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
      }
    }
    
-  
   ####filename####
   if(missing(filename)){
     filename <- paste("CTD", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], 'DN', sep = '_')
@@ -305,7 +307,6 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   #set fill value
   FillValue <- 1e35
   #####define variables####
-  
 
   dlname <- 'lon'
   lon_def <- ncvar_def(longname= "longitude", units = 'degrees_east', dim = stationdim, name = dlname, prec = 'double')
@@ -816,11 +817,13 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   if (!is.null(obj@metadata$header)){
     head <- obj@metadata$header
     hi <- list(grep(names(head), pattern = "HISTORY"))
+    if(length(hi[[1]] != 0)){
     hist <- NULL
     for ( i in 1:length(hi[[1]])){
       hist[[i]] <- unlist(head[[hi[[1]][i]]])
     }
     histo <- unlist(hist)
+    histor <- NULL
     for (i in 1:length(histo)){
       histor[[i]] <- paste(names(histo)[[i]],":", histo[[i]])
     }
@@ -830,7 +833,23 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
     for (i in 1:length(history)){
       ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
     }
-    
+    }
+      ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
+      if (length(ec[[1]] != 0)){
+      evc <- NULL
+      for( i in 1:length(ec[[1]])){
+        evc[[i]] <- unlist(head$EVENT_HEADER[[ec[[1]][i]]])
+      }
+      evec <- unlist(evc)
+      evenc <- NULL
+      for (i in 1:length(evec)){
+        evenc[[i]] <- paste(names(evec)[[i]], ":", evec[[i]])
+      }
+      eventc <- unlist(evenc)
+    for( i in 1:length(eventc)){
+      ncatt_put(ncout, 0, paste0("EVENT_COMMENTS_", i), eventc[[i]])
+    }
+      }
     
   }
   
