@@ -3,7 +3,7 @@
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
 metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MTR_SAMPLE_METADATA.csv')
-
+source('asP01.R')
 
 #' Moored temperature recorder netCDF template
 #'
@@ -269,7 +269,22 @@ mtr_nc <- function(obj, metadata, filename = NULL){
     for (i in 1:length(history)){
       ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
     }
-    
+    ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
+    if (length(ec[[1]] != 0)){
+      evc <- NULL
+      for( i in 1:length(ec[[1]])){
+        evc[[i]] <- unlist(head$EVENT_HEADER[[ec[[1]][i]]])
+      }
+      evec <- unlist(evc)
+      evenc <- NULL
+      for (i in 1:length(evec)){
+        evenc[[i]] <- paste(names(evec)[[i]], ":", evec[[i]])
+      }
+      eventc <- unlist(evenc)
+      for( i in 1:length(eventc)){
+        ncatt_put(ncout, 0, paste0("EVENT_COMMENTS_", i), eventc[[i]])
+      }
+    }
     
   }
   

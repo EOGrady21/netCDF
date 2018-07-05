@@ -6,6 +6,8 @@ obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01
 upcast <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_UP.ODF', header = 'list')
 metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
 
+source('asP01.R')
+
 #'  CTD netCDF template
 #'
 #' @param obj an odf object from oce which contains mctd data
