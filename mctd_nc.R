@@ -432,6 +432,7 @@ if (!missing(metadata)) {
 
 ####preserve ODF history header####
 if (!is.null(obj@metadata$header)){
+  if (length(obj@metadata$header) != 0){
   head <- obj@metadata$header
   hi <- list(grep(names(head), pattern = "HISTORY"))
   hist <- NULL
@@ -466,6 +467,7 @@ if (!is.null(obj@metadata$header)){
     }
   }
   
+  }
 }
 
 ####nc close####

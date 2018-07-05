@@ -253,6 +253,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   
   ####preserve ODF history header####
   if (!is.null(obj@metadata$header)){
+    if (length(obj@metadata$header) != 0){
     head <- obj@metadata$header
     hi <- list(grep(names(head), pattern = "HISTORY"))
     hist <- NULL
@@ -287,6 +288,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
       }
     }
     
+    }
   }
   
   ####nc close####

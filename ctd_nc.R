@@ -817,6 +817,7 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   
   ####preserve ODF history header####
   if (!is.null(obj@metadata$header)){
+    if (length(obj@metadata$header) != 0){
     head <- obj@metadata$header
     hi <- list(grep(names(head), pattern = "HISTORY"))
     if(length(hi[[1]] != 0)){
@@ -853,6 +854,7 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
     }
       }
     
+    }
   }
   
   ####nc close####
