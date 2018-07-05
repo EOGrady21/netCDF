@@ -1,5 +1,15 @@
 ####GF3 2 P01####
 
+#' GF# to P01
+#' 
+#' Use this function to map gf3 codes to P01 codes for exporting to netCDF
+#'
+#' @param gf3 a gf3 standard code paramater
+#'
+#' @return a matching P01 value with units and standard name (if applicable)
+#' @export
+#'
+#' @examples
 as.P01 <- function(gf3){
   gf32p01 <- read.csv('c:/Users/ChisholmE/Documents/sample files/GF3 Code Map.csv', header = TRUE)
   
