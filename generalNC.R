@@ -45,13 +45,30 @@ NCcreate <- function(obj, filename, metadata){
   ncpath <- "./"
   ncfname <- paste(ncpath, filename, ".nc", sep = "")
   
-  
+  if (!missing(metadata)) {
+    metad <- read.csv(metadata, header = TRUE)
+    
+    mn <- as.character(metad[,1])
+    mv <- as.character(metad[,2])
+    
+    
+    md <- as.list(mv)
+    names(md) <- mn
+  }
   ####setting dimensions and definitions####
   
   #create dimensions
-  timedim <- ncdim_def("time", "seconds since 1970-01-01T00:00:00Z", as.double(obj[['time']]))    #time formatting FIX
+  ldim <- list()
+  if (md$featureType == 'timeSeries'){
+  dima <- ncdim_def("time", "seconds since 1970-01-01T00:00:00Z", as.double(obj[['time']]))    #time formatting FIX
+  }
+  if (md$featureType == 'profile'){
+    dima <- ncdim_def("pressure", "decibars", as.double(obj[['pressure']]))
+    
+  }
   distdim <- ncdim_def("distance", "metres", as.double(obj[['distance']]))
   stationdim <- ncdim_def("station", "counts", as.numeric(obj[['station']]))
+  
   londim <- ncdim_def("lon", "degrees_east" , as.double(obj[['longitude']]))
   latdim <- ncdim_def("lat", "degrees_north", as.double(obj[['latitude']]))
   dimnchar <- ncdim_def('nchar', '', 1:23, create_dimvar = FALSE)
@@ -66,58 +83,60 @@ NCcreate <- function(obj, filename, metadata){
   dlname <- 'lat'
   lat_def <- ncvar_def( longname = 'latitude', units = 'degrees_north', dim =  stationdim, name = dlname, prec = 'double')
   
+  if (md$featureType == 'timeSeries'){
   dlname <- "time_02"
-  t_def <- ncvar_def("ELTMEP01", "seconds since 1970-01-01T00:00:00Z", list( stationdim, timedim), FillValue, dlname, prec = "double")
+  t_def <- ncvar_def("ELTMEP01", "seconds since 1970-01-01T00:00:00Z", list( stationdim, dima), FillValue, dlname, prec = "double")
   
   dlname <- "time_string"
-  ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, timedim), missval = NULL, name =  dlname, prec = "char")
-  
+  ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, dima), missval = NULL, name =  dlname, prec = "char")
+  }
+
   dlname <- variable_1
-  v1_def <- ncvar_def(var1, units1, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v1_def <- ncvar_def(var1, units1, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >1){
   dlname <- variable_2
-  v2_def <- ncvar_def(var2, units2, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v2_def <- ncvar_def(var2, units2, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >2){
   dlname <- variable_3
-  v3_def <- ncvar_def(var3, units3, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v3_def <- ncvar_def(var3, units3, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >3){
   dlname <- variable_4
-  v4_def <- ncvar_def(var4, units4, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v4_def <- ncvar_def(var4, units4, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >4){
   dlname <- variable_5
-  v5_def <- ncvar_def(var5, units5, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v5_def <- ncvar_def(var5, units5, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >5){
   dlname <- variable_6
-  v6_def <- ncvar_def(var6, units6, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v6_def <- ncvar_def(var6, units6, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >6){
   dlname <- variable_7
-  v7_def <- ncvar_def(var7, units7, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v7_def <- ncvar_def(var7, units7, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >7){
   dlname <- variable_8
-  v8_def <- ncvar_def(var8, units8, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v8_def <- ncvar_def(var8, units8, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >8){
   dlname <- variable_9
-  v9_def <- ncvar_def(var9, units9, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v9_def <- ncvar_def(var9, units9, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >9){
   dlname <- variable_10
-  v10_def <- ncvar_def(var10, units10, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v10_def <- ncvar_def(var10, units10, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar > 10){
   dlname <- variable_11
-  v11_def <- ncvar_def(var11, units11, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v11_def <- ncvar_def(var11, units11, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar > 11){
   dlname <- variable_12
-  v12_def <- ncvar_def(var12, units12, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v12_def <- ncvar_def(var12, units12, list(dima, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >12){
     warning ("Maximum of 12 variables exceeded, not all data has been exported!")
@@ -149,9 +168,10 @@ NCcreate <- function(obj, filename, metadata){
       force_v4 = TRUE
     )
   
-  
+  if (md$featureType == 'timeSeries'){
   ncvar_put(ncout, ts_def, obj[['time']])
   ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
+  }
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
   
@@ -197,9 +217,11 @@ NCcreate <- function(obj, filename, metadata){
   ncatt_put(ncout, 'station', 'longitude', obj[['longitude']])
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
+  if (md$featureType == 'timeSeries'){
   ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
   ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
   ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
+  }
   
   ####global####
   #might be different based on instrument
@@ -491,24 +513,23 @@ NCcreate <- function(obj, filename, metadata){
   ####CF conventions & BODC standards####
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
-  ncatt_put(ncout, 0, "program", obj[['description']])
-  ncatt_put(ncout, 0, "time_coverage_start", obj[['time_coverage_start']])
-  ncatt_put(ncout, 0, "time_coverage_end", obj[['time_coverage_end']])
+  if (md$featureType == 'timeSeries'){
+  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
+  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
+  }
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
   ncatt_put(ncout, 0, "geospatial_lon_min", obj[['longitude']])
   ncatt_put(ncout, 0, "geospatial_lon_max", obj[['longitude']])
   ncatt_put(ncout, 0, "geospatial_lon_units", "degrees_east")
-  ncatt_put(ncout, 0, "geospatial_vertical_max", obj[['sensor_depth']] + min(adp[['distance']], na.rm = TRUE))
-  ncatt_put(ncout, 0, "geospatial_vertical_min", obj[['sensor_depth']] + max(adp[['distance']], na.rm = TRUE))
+  ncatt_put(ncout, 0, "geospatial_vertical_max", obj[['depthMax']])
+  ncatt_put(ncout, 0, "geospatial_vertical_min", obj[['depthMin']])
   ncatt_put(ncout, 0, "geospatial_vertical_units", "metres")
   ncatt_put(ncout, 0, "geospatial_vertical_positive", 'down')
-  ncatt_put(ncout, 0, "project", obj[['project']])
   ncatt_put(ncout,0, "_FillValue", "1e35")
-  ncatt_put(ncout, 0, "featureType", obj[['featureType']])
   ncatt_put(ncout, 0, "date_modified", date())
-  ncatt_put(ncout, 0, "institution", adp[['institution']])
+  ncatt_put(ncout, 0, "institution", obj[['institute']])
   
   #new requirements # in csv
   # ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
@@ -555,20 +576,11 @@ NCcreate <- function(obj, filename, metadata){
   
   #metadata from spreadsheet
   
-  if (!missing(metadata)) {
-    metad <- read.csv(metadata, header = TRUE)
-    
-    mn <- as.character(metad[,1])
-    mv <- as.character(metad[,2])
-    
-    
-    md <- as.list(mv)
-    names(md) <- mn
-    
+  
     for (m in seq_along(md)) {
       ncatt_put(ncout, 0, names(md)[m], md[[m]])
     }
-  }
+  
   ####preserve ODF history header####
   if (!is.null(obj@metadata$header)){
     if (length( obj@metadata$header) != 0){
