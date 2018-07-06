@@ -50,8 +50,11 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
     eval(parse(text = paste0('P06_name_var', i,  "<- '" , vv$P06name , "'")))
     eval(parse(text = paste0('var', i, 'max <-', -10000)))
     eval(parse(text = paste0('var', i, 'min <-' , 10000)))
-    eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
-
+    if(!is.null(vv$std)){
+      eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
+    }else{
+      eval(parse(text = paste0("std_variable_", i, " <- NULL")))
+    }
     #check if variable also has quality flag
    if (v[[i]] %in% names(obj[['flags']])) {
     eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))

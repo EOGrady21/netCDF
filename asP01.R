@@ -39,6 +39,9 @@ as.P01 <- function(gf3){
   gf3$P06name <- as.character(gf32p01$P06.unit.name[[line]])
   gf3$units <- as.character(gf32p01$units[[line]])
   gf3$std <- as.character(gf32p01$standard_name[[line]])
+    if ( gf3$std == ""){
+      gf3$std <- NULL
+    }
   
   return(gf3)
 }

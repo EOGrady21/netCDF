@@ -41,7 +41,11 @@ mcm_nc <- function(obj, metadata, filename = NULL){
     eval(parse(text = paste0('P06_name_var', i,  "<- '" , vv$P06name , "'")))
     eval(parse(text = paste0('var', i, 'max <-', -10000)))
     eval(parse(text = paste0('var', i, 'min <-' , 10000)))
+    if(!is.null(vv$std)){
     eval(parse(text = paste0("std_variable_", i, " <- '", vv$std, "'")))
+    }else{
+      eval(parse(text = paste0("std_variable_", i, " <- NULL")))
+    }
     
     #check if variable also has quality flag
     if (v[[i]] %in% names(obj[['flags']])) {
@@ -54,7 +58,6 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   }
   
   numvar <- length(var)
- 
   #FILENAME
   if(missing(filename)){
   filename <- paste("MCM", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], obj[['samplingInterval']], sep = '_')
@@ -280,7 +283,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, var1, "sdn_parameter_name", P01_name_var1)
   ncatt_put(ncout, var1, "sdn_uom_urn", P06_var1)
   ncatt_put(ncout, var1, "sdn_uom_name", P06_name_var1)
+  if (!is.null(std_variable_1)){
   ncatt_put(ncout, var1, "standard_name", std_variable_1)
+  }
   ncatt_put(ncout, var1, "data_max", max(obj[[variable_1]], na.rm = TRUE))
   ncatt_put(ncout, var1, "data_min", min(obj[[variable_1]], na.rm = TRUE))
   ncatt_put(ncout, var1, "valid_max", var1max)
@@ -296,7 +301,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
     ncatt_put(ncout, var2, "sdn_parameter_name", P01_name_var2)
     ncatt_put(ncout, var2, "sdn_uom_urn", P06_var2)
     ncatt_put(ncout, var2, "sdn_uom_name", P06_name_var2)
+    if (!is.null(std_variable_2)){
     ncatt_put(ncout, var2, "standard_name", std_variable_2)
+    }
     ncatt_put(ncout, var2, "data_max", max(obj[[variable_2]], na.rm = TRUE))
     ncatt_put(ncout, var2, "data_min", min(obj[[variable_2]], na.rm = TRUE))
     ncatt_put(ncout, var2, "valid_max", var2max)
@@ -312,7 +319,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
       ncatt_put(ncout, var3, "sdn_parameter_name", P01_name_var3)
       ncatt_put(ncout, var3, "sdn_uom_urn", P06_var3)
       ncatt_put(ncout, var3, "sdn_uom_name", P06_name_var3)
+      if (!is.null(std_variable_3)){
       ncatt_put(ncout, var3, "standard_name", std_variable_3)
+      }
       ncatt_put(ncout, var3, "data_max", max(obj[[variable_3]], na.rm = TRUE))
       ncatt_put(ncout, var3, "data_min", min(obj[[variable_3]], na.rm = TRUE))
       ncatt_put(ncout, var3, "valid_max", var3max)
@@ -328,7 +337,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
         ncatt_put(ncout, var4, "sdn_parameter_name", P01_name_var4)
         ncatt_put(ncout, var4, "sdn_uom_urn", P06_var4)
         ncatt_put(ncout, var4, "sdn_uom_name", P06_name_var4)
+        if (!is.null(std_variable_4)){
         ncatt_put(ncout, var4, "standard_name", std_variable_4)
+        }
         ncatt_put(ncout, var4, "data_max", max(obj[[variable_4]], na.rm = TRUE))
         ncatt_put(ncout, var4, "data_min", min(obj[[variable_4]], na.rm = TRUE))
         ncatt_put(ncout, var4, "valid_max", var4max)
@@ -344,7 +355,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
           ncatt_put(ncout, var5, "sdn_parameter_name", P01_name_var5)
           ncatt_put(ncout, var5, "sdn_uom_urn", P06_var5)
           ncatt_put(ncout, var5, "sdn_uom_name", P06_name_var5)
+          if (!is.null(std_variable_5)){
           ncatt_put(ncout, var5, "standard_name", std_variable_5)
+          }
           ncatt_put(ncout, var5, "data_max", max(obj[[variable_5]], na.rm = TRUE))
           ncatt_put(ncout, var5, "data_min", min(obj[[variable_5]], na.rm = TRUE))
           ncatt_put(ncout, var5, "valid_max", var5max)
@@ -360,7 +373,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
             ncatt_put(ncout, var6, "sdn_parameter_name", P01_name_var6)
             ncatt_put(ncout, var6, "sdn_uom_urn", P06_var6)
             ncatt_put(ncout, var6, "sdn_uom_name", P06_name_var6)
+            if (!is.null(std_variable_6)){
             ncatt_put(ncout, var6, "standard_name", std_variable_6)
+            }
             ncatt_put(ncout, var6, "data_max", max(obj[[variable_6]], na.rm = TRUE))
             ncatt_put(ncout, var6, "data_min", min(obj[[variable_6]], na.rm = TRUE))
             ncatt_put(ncout, var6, "valid_max", var6max)
@@ -376,7 +391,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
               ncatt_put(ncout, var7, "sdn_parameter_name", P01_name_var7)
               ncatt_put(ncout, var7, "sdn_uom_urn", P06_var7)
               ncatt_put(ncout, var7, "sdn_uom_name", P06_name_var7)
+              if (!is.null(std_variable_7)){
               ncatt_put(ncout, var7, "standard_name", std_variable_7)
+              }
               ncatt_put(ncout, var7, "data_max", max(obj[[variable_7]], na.rm = TRUE))
               ncatt_put(ncout, var7, "data_min", min(obj[[variable_7]], na.rm = TRUE))
               ncatt_put(ncout, var7, "valid_max", var7max)
@@ -392,7 +409,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
                 ncatt_put(ncout, var8, "sdn_parameter_name", P01_name_var8)
                 ncatt_put(ncout, var8, "sdn_uom_urn", P06_var8)
                 ncatt_put(ncout, var8, "sdn_uom_name", P06_name_var8)
+                if (!is.null(std_variable_8)){
                 ncatt_put(ncout, var8, "standard_name", std_variable_8)
+                }
                 ncatt_put(ncout, var8, "data_max", max(obj[[variable_8]], na.rm = TRUE))
                 ncatt_put(ncout, var8, "data_min", min(obj[[variable_8]], na.rm = TRUE))
                 ncatt_put(ncout, var8, "valid_max", var8max)
@@ -408,7 +427,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
                   ncatt_put(ncout, var9, "sdn_parameter_name", P01_name_var9)
                   ncatt_put(ncout, var9 , "sdn_uom_urn", P06_var9)
                   ncatt_put(ncout, var9, "sdn_uom_name", P06_name_var9)
+                  if (!is.null(std_variable_9)){
                   ncatt_put(ncout, var9, "standard_name", std_variable_9)
+                  }
                   ncatt_put(ncout, var9, "data_max", max(obj[[variable_9]], na.rm = TRUE))
                   ncatt_put(ncout, var9, "data_min", min(obj[[variable_9]], na.rm = TRUE))
                   ncatt_put(ncout, var9, "valid_max", var9max)
@@ -424,7 +445,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
                     ncatt_put(ncout, var10, "sdn_parameter_name", P01_name_var10)
                     ncatt_put(ncout, var10, "sdn_uom_urn", P06_var10)
                     ncatt_put(ncout, var10, "sdn_uom_name", P06_name_var10)
+                    if (!is.null(std_variable_10)){
                     ncatt_put(ncout, var10, "standard_name", std_variable_10)
+                    }
                     ncatt_put(ncout, var10, "data_max", max(obj[[variable_10]], na.rm = TRUE))
                     ncatt_put(ncout, var10, "data_min", min(obj[[variable_10]], na.rm = TRUE))
                     ncatt_put(ncout, var10, "valid_max", var10max)
@@ -440,7 +463,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
                       ncatt_put(ncout, var11, "sdn_parameter_name", P01_name_var11)
                       ncatt_put(ncout, var11, "sdn_uom_urn", P06_var11)
                       ncatt_put(ncout, var11, "sdn_uom_name", P06_name_var11)
+                      if (!is.null(std_variable_11)){
                       ncatt_put(ncout, var11, "standard_name", std_variable_11)
+                      }
                       ncatt_put(ncout, var11, "data_max", max(obj[[variable_11]], na.rm = TRUE))
                       ncatt_put(ncout, var11, "data_min", min(obj[[variable_11]], na.rm = TRUE))
                       ncatt_put(ncout, var11, "valid_max", var11max)
@@ -456,7 +481,9 @@ mcm_nc <- function(obj, metadata, filename = NULL){
                         ncatt_put(ncout, var12, "sdn_parameter_name", P01_name_var12)
                         ncatt_put(ncout, var12, "sdn_uom_urn", P06_var12)
                         ncatt_put(ncout, var12, "sdn_uom_name", P06_name_var12)
+                        if (!is.null(std_variable_12)){
                         ncatt_put(ncout, var12, "standard_name", std_variable_12)
+                        }
                         ncatt_put(ncout, var12, "data_max", max(obj[[variable_12]], na.rm = TRUE))
                         ncatt_put(ncout, var12, "data_min", min(obj[[variable_12]], na.rm = TRUE))
                         ncatt_put(ncout, var12, "valid_max", var12max)
