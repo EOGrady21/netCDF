@@ -11,8 +11,7 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
-#' @param write Whether or not netCDF should be closed and exported at end of
-#'   function, set to FALSE to make adjustments before writing file
+#'
 #'   
 #' @return netCDF file with variables temperature, conductivity, pressure, sigma
 #'   theta, theta, oxygen, salinity, time, time string, station, latitude,
@@ -21,7 +20,7 @@ source('asP01.R')
 #'
 #' @examples
 
-mctd_nc <- function(obj, metadata, filename = NULL, write = TRUE){
+mctd_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
 
@@ -457,8 +456,8 @@ if (numvar > 1){
 ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
 ncatt_put(ncout, 0, "creator_type", "person")
 
-ncatt_put(ncout, 0, "time_coverage_start", obj[['time']][1])
-ncatt_put(ncout, 0, "time_coverage_end", tail(obj[['time']], n= 1))
+ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
+ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
 ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
 ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
 ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -567,11 +566,8 @@ if (!is.null(obj@metadata$header)){
 }
 
 ####nc close####
-if (write == TRUE){
+
   nc_close(ncout)
-}else{
-  print(ncout, "not exported!")
-}
 
 
 

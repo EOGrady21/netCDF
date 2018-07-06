@@ -15,8 +15,7 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
-#'   @param write Whether or not netCDF should be closed and exported at end of
-#'   function, set to FALSE to make adjustments before writing file
+#' 
 #'   
 #' @return netCDF file with variables temperature, conductivity, pressure, sigma
 #'   theta, oxygen, salinity, station, latitude, longitude, oxygen voltage,
@@ -27,7 +26,7 @@ source('asP01.R')
 #' @examples
 #' 
 
-ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL, write = TRUE){
+ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   
  
   #input varaibles automatically from obj@data
@@ -432,8 +431,8 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   ####CF conventions & BODC standards####
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
-  ncatt_put(ncout, 0, "time_coverage_start", obj[['startTime']])
-  ncatt_put(ncout, 0, "time_coverage_end", obj[['startTime']])
+  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['startTime']])))
+  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(obj[['startTime']])))
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -710,11 +709,8 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   
   ####nc close####
-  if (write == TRUE){
+ 
     nc_close(ncout)
-  }else{
-    print(ncout, "not exported!")
-  }
-  
+ 
   
 }

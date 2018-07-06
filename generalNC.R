@@ -1,7 +1,7 @@
 ####General NC template
 
 
-NCcreate <- function(obj, filename, metadata, write = TRUE){
+NCcreate <- function(obj, filename, metadata){
  
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
@@ -582,11 +582,9 @@ NCcreate <- function(obj, filename, metadata, write = TRUE){
     }
   }
   ####nc close####
-  if (write == TRUE){
+ 
   nc_close(ncout)
-  }else{
-    print(ncout, "not exported!")
-  }
+  
   
   
   

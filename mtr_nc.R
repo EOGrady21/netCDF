@@ -12,16 +12,14 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
-#'  @param write Whether or not netCDF should be closed and exported at end of
-#'   function, set to FALSE to make adjustments before writing file
-#'   
+#' 
 #' @return netCDF file with variables, temperature, time, time_String, station,
 #'   latitude, longitude
 #' @export
 #'
 #' @examples
 
-mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
+mtr_nc <- function(obj, metadata, filename = NULL){
   
   require(oce)
   require(ncdf4)
@@ -57,19 +55,9 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
     
   }
   
+  numvar <- length(var)
   
-  # variable_1 <- 'temperature'
-  # var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-  # units1 <- 'Degrees Celsius'
-  # P01_VAR1 <- 'SDN:P01::TEMPPR01'
-  # P01_name_var1 <- 'Temperature of the water body'
-  # P06_var1 <- 'SDN:P06::UPAA'
-  # P06_name_var1 <- 'Degrees Celsius'
-  # std_variable_1 <- NULL
-  # var1max <- 100
-  # var1min <- -100
-  
-  
+ 
   #FILENAME
   if(missing(filename)){
     filename <- paste("MTR", '_', obj[['cruiseNumber']], '_',  obj[['eventNumber']],'_',  obj[['eventQualifier']],'_', obj[['samplingInterval']], '-', obj[['depthMin']], sep = '')
@@ -107,10 +95,79 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   dlname <- variable_1
   v1_def <- ncvar_def(var1, units1, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
-  
+  if (numvar >1){
+    dlname <- variable_2
+    v2_def <- ncvar_def(var2, units2, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+    
+    if (numvar >2){
+      dlname <- variable_3
+      v3_def <- ncvar_def(var3, units3, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+      
+      if (numvar >3){
+        dlname <- variable_4
+        v4_def <- ncvar_def(var4, units4, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+        
+        if (numvar >4){
+          dlname <- variable_5
+          v5_def <- ncvar_def(var5, units5, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+          
+          if (numvar >5){
+            dlname <- variable_6
+            v6_def <- ncvar_def(var6, units6, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+            
+            if (numvar >6){
+              dlname <- variable_7
+              v7_def <- ncvar_def(var7, units7, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+              
+              if (numvar >7){
+                dlname <- variable_8
+                v8_def <- ncvar_def(var8, units8, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                
+                if (numvar >8){
+                  dlname <- variable_9
+                  v9_def <- ncvar_def(var9, units9, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                  
+                  if (numvar >9){
+                    dlname <- variable_10
+                    v10_def <- ncvar_def(var10, units10, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                    
+                    if (numvar > 10){
+                      dlname <- variable_11
+                      v11_def <- ncvar_def(var11, units11, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                      
+                      if (numvar > 11){
+                        dlname <- variable_12
+                        v12_def <- ncvar_def(var12, units12, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                        
+                        if (numvar >12){
+                          warning ("Maximum of 12 variables exceeded, not all data has been exported!")
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   
   #####write out definitions to new nc file####
-  ncout <- nc_create(ncfname, list( t_def, lon_def, lat_def, ts_def, v1_def ), force_v4 = TRUE)
+  defs <- grep(ls(), pattern = '_def', value = TRUE)
+  dd <- NULL
+  for ( i in 1:length(defs)){
+    eval(parse(text = paste0("dd[[i]] <- ", defs[[i]])))
+  }
+  ncout <-
+    nc_create(
+      ncfname,
+      
+      dd
+      ,
+      force_v4 = TRUE
+    )
   
   
   ncvar_put(ncout, ts_def, obj[['time']])
@@ -118,6 +175,39 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
   ncvar_put(ncout, v1_def, obj[[variable_1]])
+  if (numvar >1){
+    ncvar_put(ncout, v2_def, obj[[variable_2]])
+    if (numvar >2){
+      ncvar_put(ncout, v3_def, obj[[variable_3]])
+      if (numvar >3){
+        ncvar_put(ncout, v4_def, obj[[variable_4]])
+        if (numvar >4){
+          ncvar_put(ncout, v5_def, obj[[variable_5]])
+          if (numvar >5){
+            ncvar_put(ncout, v6_def, obj[[variable_6]])
+            if (numvar >6){
+              ncvar_put(ncout, v7_def, obj[[variable_7]])
+              if (numvar >7){
+                ncvar_put(ncout, v8_def, obj[[variable_8]])
+                if (numvar >8){
+                  ncvar_put(ncout, v9_def, obj[[variable_9]])
+                  if (numvar >9){
+                    ncvar_put(ncout, v10_def, obj[[variable_10]])
+                    if (numvar >10){
+                      ncvar_put(ncout, v11_def, obj[[variable_11]])
+                      if(numvar >11){
+                        ncvar_put(ncout, v12_def, obj[[variable_12]])
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   
   
   ####metadata####
@@ -151,17 +241,209 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   
   ####variables####
   
-  ncatt_put(ncout, var1, 'reference_scale', 'IPTS-68')
-  
+
   #sensor type, sensor depth and serial number for each variable
-  
   ncatt_put(ncout, var1, "sensor_type", obj[['model']])
   ncatt_put(ncout, var1, "sensor_depth", obj[['depthMin']])
   ncatt_put(ncout, var1, "serial_number", obj[['serialNumber']])
-  
-  
-  #generic names
   ncatt_put(ncout, var1, "generic_name", variable_1)
+  ncatt_put(ncout, var1, "sdn_parameter_urn", P01_VAR1)
+  ncatt_put(ncout, var1, "sdn_parameter_name", P01_name_var1)
+  ncatt_put(ncout, var1, "sdn_uom_urn", P06_var1)
+  ncatt_put(ncout, var1, "sdn_uom_name", P06_name_var1)
+  ncatt_put(ncout, var1, "standard_name", std_variable_1)
+  ncatt_put(ncout, var1, "data_max", max(obj[[variable_1]], na.rm = TRUE))
+  ncatt_put(ncout, var1, "data_min", min(obj[[variable_1]], na.rm = TRUE))
+  ncatt_put(ncout, var1, "valid_max", var1max)
+  ncatt_put(ncout, var1, "valid_min", var1min)
+  
+  
+  if (numvar > 1){
+    ncatt_put(ncout, var2, "sensor_type", obj[['model']])
+    ncatt_put(ncout, var2, "sensor_depth", obj[['depthMin']])
+    ncatt_put(ncout, var2, "serial_number", obj[['serialNumber']])
+    ncatt_put(ncout, var2, "generic_name", variable_2)
+    ncatt_put(ncout, var2, "sdn_parameter_urn", P01_VAR2)
+    ncatt_put(ncout, var2, "sdn_parameter_name", P01_name_var2)
+    ncatt_put(ncout, var2, "sdn_uom_urn", P06_var2)
+    ncatt_put(ncout, var2, "sdn_uom_name", P06_name_var2)
+    ncatt_put(ncout, var2, "standard_name", std_variable_2)
+    ncatt_put(ncout, var2, "data_max", max(obj[[variable_2]], na.rm = TRUE))
+    ncatt_put(ncout, var2, "data_min", min(obj[[variable_2]], na.rm = TRUE))
+    ncatt_put(ncout, var2, "valid_max", var2max)
+    ncatt_put(ncout, var2, "valid_min", var2min)
+    
+    
+    if (numvar >2){
+      ncatt_put(ncout, var3, "sensor_type", obj[['model']])
+      ncatt_put(ncout, var3, "sensor_depth", obj[['depthMin']])
+      ncatt_put(ncout, var3, "serial_number", obj[['serialNumber']])
+      ncatt_put(ncout, var3, "generic_name", variable_3)
+      ncatt_put(ncout, var3, "sdn_parameter_urn", P01_VAR3)
+      ncatt_put(ncout, var3, "sdn_parameter_name", P01_name_var3)
+      ncatt_put(ncout, var3, "sdn_uom_urn", P06_var3)
+      ncatt_put(ncout, var3, "sdn_uom_name", P06_name_var3)
+      ncatt_put(ncout, var3, "standard_name", std_variable_3)
+      ncatt_put(ncout, var3, "data_max", max(obj[[variable_3]], na.rm = TRUE))
+      ncatt_put(ncout, var3, "data_min", min(obj[[variable_3]], na.rm = TRUE))
+      ncatt_put(ncout, var3, "valid_max", var3max)
+      ncatt_put(ncout, var3, "valid_min", var3min)
+      
+      
+      if (numvar >3){
+        ncatt_put(ncout, var4, "sensor_type", obj[['model']])
+        ncatt_put(ncout, var4, "sensor_depth", obj[['depthMin']])
+        ncatt_put(ncout, var4, "serial_number", obj[['serialNumber']])
+        ncatt_put(ncout, var4, "generic_name", variable_4)   
+        ncatt_put(ncout, var4, "sdn_parameter_urn", P01_VAR4)
+        ncatt_put(ncout, var4, "sdn_parameter_name", P01_name_var4)
+        ncatt_put(ncout, var4, "sdn_uom_urn", P06_var4)
+        ncatt_put(ncout, var4, "sdn_uom_name", P06_name_var4)
+        ncatt_put(ncout, var4, "standard_name", std_variable_4)
+        ncatt_put(ncout, var4, "data_max", max(obj[[variable_4]], na.rm = TRUE))
+        ncatt_put(ncout, var4, "data_min", min(obj[[variable_4]], na.rm = TRUE))
+        ncatt_put(ncout, var4, "valid_max", var4max)
+        ncatt_put(ncout, var4, "valid_min", var4min)
+        
+        
+        if (numvar >4){
+          ncatt_put(ncout, var5, "sensor_type", obj[['model']])
+          ncatt_put(ncout, var5, "sensor_depth", obj[['depthMin']])
+          ncatt_put(ncout, var5, "serial_number", obj[['serialNumber']])
+          ncatt_put(ncout, var5, "generic_name", variable_5)
+          ncatt_put(ncout, var5, "sdn_parameter_urn", P01_VAR5)
+          ncatt_put(ncout, var5, "sdn_parameter_name", P01_name_var5)
+          ncatt_put(ncout, var5, "sdn_uom_urn", P06_var5)
+          ncatt_put(ncout, var5, "sdn_uom_name", P06_name_var5)
+          ncatt_put(ncout, var5, "standard_name", std_variable_5)
+          ncatt_put(ncout, var5, "data_max", max(obj[[variable_5]], na.rm = TRUE))
+          ncatt_put(ncout, var5, "data_min", min(obj[[variable_5]], na.rm = TRUE))
+          ncatt_put(ncout, var5, "valid_max", var5max)
+          ncatt_put(ncout, var5, "valid_min", var5min)
+          
+          
+          if (numvar >5){
+            ncatt_put(ncout, var6, "sensor_type", obj[['model']])
+            ncatt_put(ncout, var6, "sensor_depth", obj[['depthMin']])
+            ncatt_put(ncout, var6, "serial_number", obj[['serialNumber']])
+            ncatt_put(ncout, var6, "generic_name", variable_6)
+            ncatt_put(ncout, var6, "sdn_parameter_urn", P01_VAR6)
+            ncatt_put(ncout, var6, "sdn_parameter_name", P01_name_var6)
+            ncatt_put(ncout, var6, "sdn_uom_urn", P06_var6)
+            ncatt_put(ncout, var6, "sdn_uom_name", P06_name_var6)
+            ncatt_put(ncout, var6, "standard_name", std_variable_6)
+            ncatt_put(ncout, var6, "data_max", max(obj[[variable_6]], na.rm = TRUE))
+            ncatt_put(ncout, var6, "data_min", min(obj[[variable_6]], na.rm = TRUE))
+            ncatt_put(ncout, var6, "valid_max", var6max)
+            ncatt_put(ncout, var6, "valid_min", var6min)
+            
+            
+            if (numvar > 6){
+              ncatt_put(ncout, var7, "sensor_type", obj[['model']])
+              ncatt_put(ncout, var7, "sensor_depth", obj[['depthMin']])
+              ncatt_put(ncout, var7, "serial_number", obj[['serialNumber']])
+              ncatt_put(ncout, var7, "generic_name", variable_7)
+              ncatt_put(ncout, var7, "sdn_parameter_urn", P01_VAR7)
+              ncatt_put(ncout, var7, "sdn_parameter_name", P01_name_var7)
+              ncatt_put(ncout, var7, "sdn_uom_urn", P06_var7)
+              ncatt_put(ncout, var7, "sdn_uom_name", P06_name_var7)
+              ncatt_put(ncout, var7, "standard_name", std_variable_7)
+              ncatt_put(ncout, var7, "data_max", max(obj[[variable_7]], na.rm = TRUE))
+              ncatt_put(ncout, var7, "data_min", min(obj[[variable_7]], na.rm = TRUE))
+              ncatt_put(ncout, var7, "valid_max", var7max)
+              ncatt_put(ncout, var7, "valid_min", var7min)
+              
+              
+              if (numvar > 7){
+                ncatt_put(ncout, var8, "sensor_type", obj[['model']])
+                ncatt_put(ncout, var8, "sensor_depth", obj[['depthMin']])
+                ncatt_put(ncout, var8, "serial_number", obj[['serialNumber']])
+                ncatt_put(ncout, var8, "generic_name", variable_8)
+                ncatt_put(ncout, var8, "sdn_parameter_urn", P01_VAR8)
+                ncatt_put(ncout, var8, "sdn_parameter_name", P01_name_var8)
+                ncatt_put(ncout, var8, "sdn_uom_urn", P06_var8)
+                ncatt_put(ncout, var8, "sdn_uom_name", P06_name_var8)
+                ncatt_put(ncout, var8, "standard_name", std_variable_8)
+                ncatt_put(ncout, var8, "data_max", max(obj[[variable_8]], na.rm = TRUE))
+                ncatt_put(ncout, var8, "data_min", min(obj[[variable_8]], na.rm = TRUE))
+                ncatt_put(ncout, var8, "valid_max", var8max)
+                ncatt_put(ncout, var8, "valid_min", var8min)
+                
+                
+                if (numvar > 8){
+                  ncatt_put(ncout, var9, "sensor_type", obj[['model']])
+                  ncatt_put(ncout, var9, "sensor_depth", obj[['depthMin']])
+                  ncatt_put(ncout, var9, "serial_number", obj[['serialNumber']])
+                  ncatt_put(ncout, var9, "generic_name", variable_9)
+                  ncatt_put(ncout, var9, "sdn_parameter_urn", P01_VAR9)
+                  ncatt_put(ncout, var9, "sdn_parameter_name", P01_name_var9)
+                  ncatt_put(ncout, var9 , "sdn_uom_urn", P06_var9)
+                  ncatt_put(ncout, var9, "sdn_uom_name", P06_name_var9)
+                  ncatt_put(ncout, var9, "standard_name", std_variable_9)
+                  ncatt_put(ncout, var9, "data_max", max(obj[[variable_9]], na.rm = TRUE))
+                  ncatt_put(ncout, var9, "data_min", min(obj[[variable_9]], na.rm = TRUE))
+                  ncatt_put(ncout, var9, "valid_max", var9max)
+                  ncatt_put(ncout, var9, "valid_min", var9min)
+                  
+                  
+                  if (numvar >9){
+                    ncatt_put(ncout, var10, "sensor_type", obj[['model']])
+                    ncatt_put(ncout, var10, "sensor_depth", obj[['depthMin']])
+                    ncatt_put(ncout, var10, "serial_number", obj[['serialNumber']])
+                    ncatt_put(ncout, var10, "generic_name", variable_10)
+                    ncatt_put(ncout, var10, "sdn_parameter_urn", P01_VAR10)
+                    ncatt_put(ncout, var10, "sdn_parameter_name", P01_name_var10)
+                    ncatt_put(ncout, var10, "sdn_uom_urn", P06_var10)
+                    ncatt_put(ncout, var10, "sdn_uom_name", P06_name_var10)
+                    ncatt_put(ncout, var10, "standard_name", std_variable_10)
+                    ncatt_put(ncout, var10, "data_max", max(obj[[variable_10]], na.rm = TRUE))
+                    ncatt_put(ncout, var10, "data_min", min(obj[[variable_10]], na.rm = TRUE))
+                    ncatt_put(ncout, var10, "valid_max", var10max)
+                    ncatt_put(ncout, var10, "valid_min", var10min)
+                    
+                    
+                    if (numvar >10){
+                      ncatt_put(ncout, var11, "sensor_type", obj[['model']])
+                      ncatt_put(ncout, var11, "sensor_depth", obj[['depthMin']])
+                      ncatt_put(ncout, var11, "serial_number", obj[['serialNumber']])
+                      ncatt_put(ncout, var11, "generic_name", variable_11)
+                      ncatt_put(ncout, var11, "sdn_parameter_urn", P01_VAR11)
+                      ncatt_put(ncout, var11, "sdn_parameter_name", P01_name_var11)
+                      ncatt_put(ncout, var11, "sdn_uom_urn", P06_var11)
+                      ncatt_put(ncout, var11, "sdn_uom_name", P06_name_var11)
+                      ncatt_put(ncout, var11, "standard_name", std_variable_11)
+                      ncatt_put(ncout, var11, "data_max", max(obj[[variable_11]], na.rm = TRUE))
+                      ncatt_put(ncout, var11, "data_min", min(obj[[variable_11]], na.rm = TRUE))
+                      ncatt_put(ncout, var11, "valid_max", var11max)
+                      ncatt_put(ncout, var11, "valid_min", var11min)
+                      
+                      
+                      if (numvar >11){
+                        ncatt_put(ncout, var12, "sensor_type", obj[['model']])
+                        ncatt_put(ncout, var12, "sensor_depth", obj[['depthMin']])
+                        ncatt_put(ncout, var12 , "serial_number", obj[['serialNumber']])
+                        ncatt_put(ncout, var12, "generic_name", variable_12)
+                        ncatt_put(ncout, var12, "sdn_parameter_urn", P01_VAR12)
+                        ncatt_put(ncout, var12, "sdn_parameter_name", P01_name_var12)
+                        ncatt_put(ncout, var12, "sdn_uom_urn", P06_var12)
+                        ncatt_put(ncout, var12, "sdn_uom_name", P06_name_var12)
+                        ncatt_put(ncout, var12, "standard_name", std_variable_12)
+                        ncatt_put(ncout, var12, "data_max", max(obj[[variable_12]], na.rm = TRUE))
+                        ncatt_put(ncout, var12, "data_min", min(obj[[variable_12]], na.rm = TRUE))
+                        ncatt_put(ncout, var12, "valid_max", var12max)
+                        ncatt_put(ncout, var12, "valid_min", var12min)
+                        
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   
   
   ####CF conventions & BODC standards####
@@ -172,8 +454,8 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
   
-  ncatt_put(ncout, 0, "time_coverage_start", obj[['time']][1])
-  ncatt_put(ncout, 0, "time_coverage_end", tail(obj[['time']], n= 1))
+  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
+  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -197,24 +479,21 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   ncatt_put(ncout, var1, "sdn_parameter_urn", P01_VAR1)
   
   
-  ncatt_put(ncout, var1, "sdn_parameter_name", P01_name_var1)
-  
+
   ncatt_put(ncout, "lon", "sdn_parameter_name", "Longitude east")
   ncatt_put(ncout, "lat", "sdn_parameter_name", "Latitude north")
   ncatt_put(ncout, 'ELTMEP01', "sdn_parameter_name", "Elapsed time (since 1970-01-01T00:00:00Z)")
   ncatt_put(ncout, 'time_string', "sdn_parameter_name", "String corresponding to format 'YYYY-MM-DDThh:mm:ss.sssZ' or other valid ISO8601 string")
   
   
-  ncatt_put(ncout, var1, "sdn_uom_urn", P06_var1)
-  
+
   ncatt_put(ncout, "lon", "sdn_uom_urn", "SDN:P06::DEGE")
   ncatt_put(ncout, "lat", "sdn_uom_urn", "SDN:P06:DEGN")
   ncatt_put(ncout, "ELTMEP01", "sdn_uom_urn", "SDN:P06::UTBB")
   ncatt_put(ncout, "time_string", "sdn_uom_urn", "SDN:P06::TISO")
   
   
-  ncatt_put(ncout, var1, "sdn_uom_name", P06_name_var1)
-  
+
   ncatt_put(ncout, "lon", "sdn_uom_name", "Degrees east")
   ncatt_put(ncout, "lat", "sdn_uom_name", "Degrees north")
   ncatt_put(ncout, "ELTMEP01", "sdn_uom_name", "Seconds")
@@ -226,14 +505,7 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   ncatt_put(ncout, "lat", "standard_name", "latitude")
   ncatt_put(ncout, "lon", "standard_name", "longitude")
   
-  ncatt_put(ncout, var1, "standard_name", std_variable_1)
-  
-  
-  ####data max and min####
-  ncatt_put(ncout, var1, "data_max", max(obj[[variable_1]], na.rm = TRUE))
-  ncatt_put(ncout, var1, "data_min", min(obj[[variable_1]], na.rm = TRUE))
-  ncatt_put(ncout, var1, "valid_max", var1max)
-  ncatt_put(ncout, var1, "valid_min", var1min)
+
   
   
   #metadata from spreadsheet
@@ -293,14 +565,9 @@ mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
     }
   }
   ####nc close####
-  if (write == TRUE){
+  
     nc_close(ncout)
-  }else{
-    print(ncout, "not exported!")
-  }
-  
-  
-  
+ 
   
 }
 

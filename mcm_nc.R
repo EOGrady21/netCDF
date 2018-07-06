@@ -2,16 +2,14 @@
 
 obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mcm/MCM_HUD2013008_1844_602_3600.ODF', header = 'list')
 metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_METADATA.csv')
-#source('asP01.R')
+source('asP01.R')
 
 #' Current Meter netCDF template
 #'
 #' @param obj an odf object from oce which contains mcm data
 #' @param metadata a csv file following the standard template which includes all necessary metadata 
 #' @param filename the desired name for the netCDF file produced
-#'@param write Whether or not netCDF should be closed and exported at end of
-#'   function, set to FALSE to make adjustments before writing file
-#'   
+# 
 #' @return netCDF file with variables temperature, slainity, pressure, current
 #'   direction, current speed, time, time string, latitude, longitude, station 
 #'   (maximum of 5 variables not including time or lat/lon -- if your instrument
@@ -19,7 +17,7 @@ metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCM_SAMPLE_META
 #' @export
 #'
 #' @examples
-mcm_nc <- function(obj, metadata, filename = NULL, write = TRUE){
+mcm_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
   
@@ -88,6 +86,9 @@ mcm_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   
   dlname <- "time_string"
   ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, timedim), missval = NULL, name =  dlname, prec = "char")
+  
+  dlname <- variable_1
+  v1_def <- ncvar_def(var1, units1, list(timedim, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >1){
     dlname <- variable_2
@@ -481,8 +482,8 @@ mcm_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
   
-  ncatt_put(ncout, 0, "time_coverage_start", obj[['time']][1])
-  ncatt_put(ncout, 0, "time_coverage_end", tail(obj[['time']], n= 1))
+  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
+  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -587,13 +588,9 @@ mcm_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   }
   }
   ####nc close####
-  if (write == TRUE){
+  
     nc_close(ncout)
-  }else{
-    print(ncout, "not exported!")
-  }
-  
-  
+ 
  
   
 }
