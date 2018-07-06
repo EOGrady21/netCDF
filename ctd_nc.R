@@ -15,6 +15,8 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
+#'   @param write Whether or not netCDF should be closed and exported at end of
+#'   function, set to FALSE to make adjustments before writing file
 #'   
 #' @return netCDF file with variables temperature, conductivity, pressure, sigma
 #'   theta, oxygen, salinity, station, latitude, longitude, oxygen voltage,
@@ -25,7 +27,7 @@ source('asP01.R')
 #' @examples
 #' 
 
-ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
+ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL, write = TRUE){
   
   if (!missing(metadata)) {
     metad <- read.csv(metadata, header = TRUE)
@@ -858,7 +860,11 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   }
   
   ####nc close####
-  nc_close(ncout)
+  if (write == TRUE){
+    nc_close(ncout)
+  }else{
+    print(ncout, "not exported!")
+  }
   
   
 }

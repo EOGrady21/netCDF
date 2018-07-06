@@ -12,6 +12,8 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
+#'  @param write Whether or not netCDF should be closed and exported at end of
+#'   function, set to FALSE to make adjustments before writing file
 #'   
 #' @return netCDF file with variables, temperature, time, time_String, station,
 #'   latitude, longitude
@@ -19,7 +21,7 @@ source('asP01.R')
 #'
 #' @examples
 
-mtr_nc <- function(obj, metadata, filename = NULL){
+mtr_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   
   require(oce)
   require(ncdf4)
@@ -290,9 +292,12 @@ mtr_nc <- function(obj, metadata, filename = NULL){
     
     }
   }
-  
   ####nc close####
-  nc_close(ncout)
+  if (write == TRUE){
+    nc_close(ncout)
+  }else{
+    print(ncout, "not exported!")
+  }
   
   
   

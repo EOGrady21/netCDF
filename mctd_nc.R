@@ -11,6 +11,8 @@ source('asP01.R')
 #'   necessary metadata
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
+#' @param write Whether or not netCDF should be closed and exported at end of
+#'   function, set to FALSE to make adjustments before writing file
 #'   
 #' @return netCDF file with variables temperature, conductivity, pressure, sigma
 #'   theta, theta, oxygen, salinity, time, time string, station, latitude,
@@ -19,7 +21,7 @@ source('asP01.R')
 #'
 #' @examples
 
-mctd_nc <- function(obj, metadata, filename = NULL){
+mctd_nc <- function(obj, metadata, filename = NULL, write = TRUE){
   require(oce)
   require(ncdf4)
 
@@ -53,88 +55,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
     
     
   }
-#   
-# #7 VARIABLES
-#   variable_1 <- 'temperature'
-#   var1 <- obj@metadata$dataNamesOriginal[[variable_1]]
-#   units1 <- 'Degrees Celsius'
-#   P01_VAR1 <- 'SDN:P01::TEMPPR01'
-#   P01_name_var1 <- 'Temperature of the water body'
-#   P06_var1 <- 'SDN:P06::UPAA'
-#   P06_name_var1 <- 'Degrees Celsius'
-#   std_variable_1 <- NULL
-#   var1max <- 100
-#   var1min <- -100
-#   
-#   
-#   variable_2 <- 'conductivity'
-#   var2 <- obj@metadata$dataNamesOriginal[[variable_2]]
-#   units2 <- 'S/m'
-#   P01_VAR2 <- 'SDN:P01::CNDCST01'
-#   P01_name_var2 <- 'Electrical conductivity of the water body by CTD'
-#   P06_var2 <- 'SDN:P06::UECA'
-#   P06_name_var2 <- 'Siemens per metre'
-#   std_variable_2 <- 'sea_water_electrical_conductivity'
-#     var2max <- 1000
-#   var2min <- -1000
-#   
-#   variable_3 <- 'pressure'
-#   var3 <- obj@metadata$dataNamesOriginal[[variable_3]]
-#   units3 <- 'decibars'
-#   P01_VAR3 <- 'SDN:P01::PRESPR01'
-#   P01_name_var3 <- 'Pressure (spatial co-ordinate) exerted by the water body by profiling pressure sensor and corrected to read zero at sea level'
-#   P06_var3 <- 'SDN:P06::UPDB'
-#   P06_name_var3 <- 'Decibars'
-#   std_variable_3 <- 'sea_water_pressure'
-#   var3max <- 1000
-#   var3min <- -1000
-#   
-#   variable_4 <- 'sigmaTheta'
-#   var4 <- obj@metadata$dataNamesOriginal[[variable_4]]
-#   units4 <- 'kg/m^3'
-#   P01_VAR4 <- 'SDN:P01::SIGTPR01'
-#   P01_name_var4 <- 'Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm'
-#   P06_var4 <- 'SDN:P06::UKMC'
-#   P06_name_var4 <- 'Kilograms per cubic metre'
-#   std_variable_4 <- 'sea_water_sigma_theta'
-#     var4max <- 1000
-#   var4min <- -1000
-#   
-#   
-#   variable_5 <- 'theta'
-#   var5 <- obj@metadata$dataNamesOriginal[[variable_5]]
-#   units5 <- 'degrees celsius'
-#   P01_VAR5 <- 'SDN:P01::POTMS601'
-#   P01_name_var5 <- 'Potential temperature (IPTS-68) of the water body by CTD and computation from pressure, salinity and IPTS-68 temperature using UNESCO algorithm'
-#   P06_var5 <- 'SDN:P06::UPAA'
-#   P06_name_var5 <- 'Degrees Celsius'
-#   std_variable_5 <- 'sea_water_potential_temperature'
-#     var5max <- 1000
-#   var5min <- -1000
-#   
-#   variable_6 <- 'oxygen'
-#   var6 <- obj@metadata$dataNamesOriginal[[variable_6]]
-#   units6 <- 'ml/L'
-#   P01_VAR6 <- 'SDN:P01::DOXYCZ01'
-#   P01_name_var6 <- 'Concentration of oxygen {O2 CAS 7782-44-7} per unit volume of the water body [dissolved plus reactive particulate phase] by in-situ sensor and calibration against sample data'
-#   P06_var6 <- 'SDN:P06::UMLL'
-#   P06_name_var6 <- '	Millilitres per litre'
-#   std_variable_6 <- NULL
-#     var6max <- 1000
-#   var6min <- -1000
-#   
-#   
-#   variable_7 <- 'salinity'
-#   var7 <- obj@metadata$dataNamesOriginal[[variable_7]]
-#   units7 <- '1'
-#   P01_VAR7 <- 'SDN:P01::PSLTZZ01'
-#   P01_name_var7 <- 'Practical salinity of the water body'
-#   P06_var7 <- 'SDN:P06::UUUU'
-#   P06_name_var7 <- 'Dimensionless'
-#   std_variable_7 <- 'sea_water_practical_salinity'
-#     var7max <- 1000
-#   var7min <- -1000
-#   
+
   
 #FILENAME
 if(missing(filename)){
@@ -471,7 +392,11 @@ if (!is.null(obj@metadata$header)){
 }
 
 ####nc close####
-nc_close(ncout)
+if (write == TRUE){
+  nc_close(ncout)
+}else{
+  print(ncout, "not exported!")
+}
 
 
 
