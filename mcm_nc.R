@@ -10,7 +10,7 @@ source('asP01.R')
 #' @param metadata a csv file following the standard template which includes all necessary metadata 
 #' @param filename the desired name for the netCDF file produced
 # 
-#' @return netCDF file with variables temperature, slainity, pressure, current
+#' @return netCDF file with variables temperature, salinity, pressure, current
 #'   direction, current speed, time, time string, latitude, longitude, station 
 #'   (maximum of 5 variables not including time or lat/lon -- if your instrument
 #'   exceeds this please adjust netCDF template accordingly)
