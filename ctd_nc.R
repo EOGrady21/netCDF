@@ -102,7 +102,7 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   ####setting dimensions and definitions####
   
  
-  presdim <- ncdim_def("pressure", "decibars", as.double(obj[['pressure']]))
+  scandim <- ncdim_def("scan", "counts", as.double(obj[['scan']]))
   stationdim <- ncdim_def("station", "counts", as.numeric(obj[['station']]))
   londim <- ncdim_def("lon", "degrees_east" , as.double(obj[['longitude']]))
   latdim <- ncdim_def("lat", "degrees_north", as.double(obj[['latitude']]))
@@ -119,61 +119,61 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   lat_def <- ncvar_def( longname = 'latitude', units = 'degrees_north', dim =  stationdim, name = dlname, prec = 'double')
   
   dlname <- variable_1
-  v1_def <- ncvar_def(var1, units1, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v1_def <- ncvar_def(var1, units1, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >1){
   dlname <- variable_2
-  v2_def <- ncvar_def(var2, units2, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v2_def <- ncvar_def(var2, units2, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >2){
   dlname <- variable_3
-  v3_def <- ncvar_def(var3, units3, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v3_def <- ncvar_def(var3, units3, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >3){
   dlname <- variable_4
-  v4_def <- ncvar_def(var4, units4, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v4_def <- ncvar_def(var4, units4, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
  
   if (numvar >4){
   dlname <- variable_5
-  v5_def <- ncvar_def(var5, units5, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v5_def <- ncvar_def(var5, units5, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >5){
   dlname <- variable_6
-  v6_def <- ncvar_def(var6, units6, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v6_def <- ncvar_def(var6, units6, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >6){
   dlname <- variable_7
-  v7_def <- ncvar_def(var7, units7, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v7_def <- ncvar_def(var7, units7, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >7){
   dlname <- variable_8
-  v8_def <- ncvar_def(var8, units8, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v8_def <- ncvar_def(var8, units8, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar > 8 ){
   dlname <- variable_9
-  v9_def <- ncvar_def(var9, units9, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v9_def <- ncvar_def(var9, units9, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar > 9 ){
   dlname <- variable_10
-  v10_def <- ncvar_def(var10, units10, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v10_def <- ncvar_def(var10, units10, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >10){
   dlname <- variable_11
-  v11_def <- ncvar_def(var11, units11, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+  v11_def <- ncvar_def(var11, units11, list(scandim, stationdim), FillValue, dlname, prec = 'double')
   
   if (numvar >11){
     dlname <- variable_12
-    v12_def <- ncvar_def(var12, units12, list(presdim, stationdim), FillValue, dlname, prec = 'double')
+    v12_def <- ncvar_def(var12, units12, list(scandim, stationdim), FillValue, dlname, prec = 'double')
     
     
   }
@@ -191,51 +191,51 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   
   
   dlname <- variable1_QC
-  v1qc_def <- ncvar_def(var1_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v1qc_def <- ncvar_def(var1_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag > 1){
   dlname <- variable2_QC
-  v2qc_def <- ncvar_def(var2_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v2qc_def <- ncvar_def(var2_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >2){
   dlname <- variable3_QC
-  v3qc_def <- ncvar_def(var3_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v3qc_def <- ncvar_def(var3_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >3){
   dlname <- variable4_QC
-  v4qc_def <- ncvar_def(var4_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v4qc_def <- ncvar_def(var4_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >4){
   dlname <- variable5_QC
-  v5qc_def <- ncvar_def(var5_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v5qc_def <- ncvar_def(var5_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >5){
   dlname <- variable6_QC
-  v6qc_def <- ncvar_def(var6_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v6qc_def <- ncvar_def(var6_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >6){
   dlname <- variable7_QC
-  v7qc_def <- ncvar_def(var7_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v7qc_def <- ncvar_def(var7_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >7){
   dlname <- variable8_QC
-  v8qc_def <- ncvar_def(var8_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v8qc_def <- ncvar_def(var8_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag > 8){
   dlname <- variable9_QC
-  v9qc_def <- ncvar_def(var9_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v9qc_def <- ncvar_def(var9_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >9){
   dlname <- variable10_QC
-  v10qc_def <- ncvar_def(var10_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v10qc_def <- ncvar_def(var10_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >10){
   dlname <- variable11_QC
-  v11qc_def <- ncvar_def(var11_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+  v11qc_def <- ncvar_def(var11_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   
   if (numflag >11){
     dlname <- variable12_QC
-    v12qc_def <- ncvar_def(var12_QC, units = '', list(presdim, stationdim), missval = 0, dlname, prec = 'integer')
+    v12qc_def <- ncvar_def(var12_QC, units = '', list(scandim, stationdim), missval = 0, dlname, prec = 'integer')
   }
   }
   }

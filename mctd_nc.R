@@ -27,6 +27,13 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
   
+  #remove SYTM from var list
+  tr <- grep(v, pattern = 'time')
+  v <- v[-tr]
+  vt <- grep(var, pattern = 'SYTM')
+  var <- var[-vt]
+  
+  
   for ( i in 1:length(var)){
     var[[i]] <- as.P01(var[[i]])
   }
