@@ -5,13 +5,20 @@
 #' Check that an ODF object has all the metadata required to build a complete netCDF file
 #'
 #' @param obj an odf object (oce::read.odf())
+#' @param print TRUE or FALSE, TRUE will cause errors to be displayed at command
+#'   line, FALSE will sink errors into text document
 #'
 #' @return will print any issues with metadata to command line, if nothing
 #'   prints then all metadata is intact
 #' @export
 #'
 #' @examples
-odf_check <- function(obj){
+odf_check <- function(obj, print = TRUE){
+  if (print == FALSE){
+  name <- gsub(obj[['filename']], pattern = ".ODF", replacement = "")
+  sink(file = paste0(name, '_metadata_check.txt'))
+  }
+  
   if (is.null(obj[['longitude']])){
     print('Missing Longitude Value!')
   }
@@ -114,6 +121,8 @@ odf_check <- function(obj){
     }
   }
   
-  
+  if(print == FALSE){
+  sink(NULL)
+  }
   
 }
