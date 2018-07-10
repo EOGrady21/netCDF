@@ -17,11 +17,15 @@ source('asP01.R')
 #' @export
 #'
 #' @examples
+#' file <- list.files('.', pattern = "MCM*...*.ODF")
+#' metadata <- ('MCM_SAMPLE_METADATA')
+#' obj <- read.odf(file)
+#' mcm_nc(obj, metadata)
 mcm_nc <- function(obj, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
   
-  
+  #GET VARIABLE NAMES
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
   
@@ -31,6 +35,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   vt <- grep(var, pattern = 'SYTM')
   var <- var[-vt]
   
+  #POPULATE VARIABLES WITH APPROPRIATE DATA AND CODES
   for ( i in 1:length(var)){
     var[[i]] <- as.P01(var[[i]])
   }
@@ -64,6 +69,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   }
   
   numvar <- length(var)
+  
   #FILENAME
   if(missing(filename)){
   filename <- paste("MCM", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], obj[['samplingInterval']], sep = '_')
@@ -172,11 +178,13 @@ mcm_nc <- function(obj, metadata, filename = NULL){
       ,
       force_v4 = TRUE
     )
-  
+  #INSERT STANDARD VARIABLES FOR DIMENSIONS
   ncvar_put(ncout, ts_def, obj[['time']])
   ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
+  
+  #INSERT DATA
   ncvar_put(ncout, v1_def, obj[[variable_1]])
   if (numvar >1){
     ncvar_put(ncout, v2_def, obj[[variable_2]])
@@ -532,7 +540,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "institution", obj[['institute']])
   
   
-  ####BODC P01 names####
+  ####BODC P01 names FOR STANDARD VARIABLES####
   ncatt_put(ncout, "ELTMEP01", "sdn_parameter_urn", "SDN:P01::ELTMEP01")
   ncatt_put(ncout, "lon", "sdn_parameter_urn", "SDN:P01::ALONZZ01")
   ncatt_put(ncout, "lat", "sdn_parameter_urn", "SDN:P01::ALATZZ01")
@@ -557,7 +565,7 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, "ELTMEP01", "sdn_uom_name", "Seconds")
   ncatt_put(ncout, "time_string", "sdn_uom_name", "ISO8601")
   
-  #####CF standard names####
+  #####CF standard names FOR STANDARD VARIABLES####
   ncatt_put(ncout, "ELTMEP01", "standard_name", "time")
   ncatt_put(ncout, "lat", "standard_name", "latitude")
   ncatt_put(ncout, "lon", "standard_name", "longitude")
@@ -601,6 +609,8 @@ mcm_nc <- function(obj, metadata, filename = NULL){
   for (i in 1:length(history)){
   ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
   }
+  
+  #PRESERVE EVENT_COMMENTS
   ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
   if (length(ec[[1]] != 0)){
     evc <- NULL
