@@ -18,7 +18,7 @@ source('asP01.R')
 #'
 #' @examples
 #' file <- list.files('.', pattern = "MCM*...*.ODF")
-#' metadata <- ('MCM_SAMPLE_METADATA')
+#' metadata <- ('MCM_SAMPLE_METADATA.csv')
 #' obj <- read.odf(file)
 #' mcm_nc(obj, metadata)
 mcm_nc <- function(obj, metadata, filename = NULL){

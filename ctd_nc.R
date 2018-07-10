@@ -25,7 +25,7 @@ source('asP01.R')
 #'
 #' @examples
 #' file <- list.files('.', pattern = "CTD*...*.ODF")
-#' metadata <- ('CTD_SAMPLE_METADATA')
+#' metadata <- ('CTD_SAMPLE_METADATA.csv')
 #' obj <- read.odf(file[1])
 #' upcast <- read.odf(file[2])
 #' mcm_nc(obj, upcast, metadata)
