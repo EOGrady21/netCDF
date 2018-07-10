@@ -4,7 +4,7 @@
 
 # obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_DN.ODF', header = 'list')
 # upcast <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_UP.ODF', header = 'list')
-metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
+#metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
 
 source('asP01.R')
 
@@ -24,7 +24,11 @@ source('asP01.R')
 #' @export
 #'
 #' @examples
-#' 
+#' file <- list.files('.', pattern = "CTD*...*.ODF")
+#' metadata <- ('CTD_SAMPLE_METADATA')
+#' obj <- read.odf(file[1])
+#' upcast <- read.odf(file[2])
+#' mcm_nc(obj, upcast, metadata)
 
 ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   require(oce)
@@ -35,12 +39,14 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
   
-  # #remove SYTM from var list
+  # #remove SYTM from var list #creating issue with variable 'altimeter'
   # tr <- grep(v, pattern = 'time')
   # v <- v[-tr]
   # vt <- grep(var, pattern = 'SYTM')
   # var <- var[-vt]
   
+  
+  #POPULATE VARIABLE WITH APPROPRIATE CODE NAMES
   for ( i in 1:length(var)){
     var[[i]] <- as.P01(var[[i]])
   }
@@ -71,10 +77,12 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
     
     
   }
+  #CHECK NUMBER OF VARIABLES
   numvar <- length(var)
   if (numvar >23){
     warning("Maximum of 23 variables exceeded! Not all data has been exported!")
   }
+  #CHECK NUMBER OF FLAGS
   tf <-  v %in% names(obj[['flags']])
   numflag <- length(tf[tf == TRUE])
 
@@ -401,7 +409,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
       ,
       force_v4 = TRUE
     )
-  
+  ####INSERT DATA####
   
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
@@ -477,7 +485,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
     }
   }
   
-  
+  ####INSERT FLAGS####
   if (numflag >0){
   ncvar_put(ncout, v1qc_def, obj@metadata$flags[[variable_1]] )
   if (numflag >1){
@@ -551,7 +559,6 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   
   ####metadata####
-  ####metadata####
   ncatt_put(ncout, 'station', 'longitude', obj[['longitude']])
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
@@ -615,7 +622,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   # 
   
   
-  ####variables####
+  ####variable attributes####
   
   ###ancillary variables
   if (numvar >0 & numflag >0){
@@ -693,10 +700,16 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   
   ##reference scales
-  
+  #may need to add something to check for and insert reference scales for
+  #variables like temperature and salinity
   
   
   #sensor type, sensor depth and serial number for each variable
+  #generic names
+  #P01 and P06 names and codes
+  #standard names
+  #data min/max
+  #valid min/max
   ncatt_put(ncout, var1, "sensor_type", obj[['model']])
   ncatt_put(ncout, var1, "sensor_depth", obj[['depthMin']])
   ncatt_put(ncout, var1, "serial_number", obj[['serialNumber']])
@@ -1195,7 +1208,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   ncatt_put(ncout, "ELTMEP01", "standard_name", "time")
   
   
-  ####QUALITY CONTROL####
+  ####QUALITY CONTROL attributes####
   if (numflag >0){
     ncatt_put(ncout, var1_QC, 'flag_values', c(0:9))
     ncatt_put(ncout, var1_QC, 'flag_meanings', 'none good probably_good probably_bad bad changed BD excess interpolated missing')
@@ -1378,6 +1391,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
           ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
         }
       }
+      #preserve EVENT_COMMENTS
       ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
       if (length(ec[[1]] != 0)){
         evc <- NULL
