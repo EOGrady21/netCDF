@@ -1,7 +1,9 @@
 ####mctd NC template####
 
-obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mctd/MCTD_HUD2015006_1897_11688_1800.ODF', header = 'list')
-metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCTD_SAMPLE_METADATA.csv')
+# obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mctd/MCTD_HUD2015006_1897_11688_1800.ODF', header = 'list')
+# metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MCTD_SAMPLE_METADATA.csv')
+
+
 source('asP01.R')
 
 #' Moored CTD netCDF template
@@ -13,12 +15,15 @@ source('asP01.R')
 #'   the default will conform to BIO naming conventions
 #'
 #'   
-#' @return netCDF file with variables temperature, conductivity, pressure, sigma
-#'   theta, theta, oxygen, salinity, time, time string, station, latitude,
-#'   longitude
+#' @return netCDF file with a maximum of 12 variables
 #' @export
 #'
 #' @examples
+#' file <- list.files('.', pattern = "MCTD*...*.ODF")
+#' obj <- read.odf(file)
+#' metadata <- 'MCTD_SAMPLE_METADATA.csv'
+#' mctd_nc(obj, metadata)
+#' 
 
 mctd_nc <- function(obj, metadata, filename = NULL){
   require(oce)
@@ -33,6 +38,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
   vt <- grep(var, pattern = 'SYTM')
   var <- var[-vt]
   
+  #POPULATE VARIABLES WITH APPROPRIATE CODES
   
   for ( i in 1:length(var)){
     var[[i]] <- as.P01(var[[i]])
@@ -64,7 +70,7 @@ mctd_nc <- function(obj, metadata, filename = NULL){
     
     
   }
-
+#CHECK LENGTH OF VARIABLES
   numvar <- length(var)
   
 #FILENAME
@@ -177,7 +183,7 @@ ncout <-
     force_v4 = TRUE
   )
 
-
+####INSERT DATA####
 ncvar_put(ncout, ts_def, obj[['time']])
 ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
 ncvar_put(ncout, lon_def, obj[['longitude']])
@@ -246,16 +252,18 @@ ncatt_put(ncout, 0, "chief_scientist", obj[['scientist']])
 ncatt_put(ncout, 0, "water_depth", obj[['waterDepth']])
 ncatt_put(ncout, 0, "cruise_name", obj[['cruise']])
 
-####variables####
+####variable ATTRIBUTES####
 
 ncatt_put(ncout, var1, 'reference_scale', 'IPTS-68')
 
 
-#sensor type, sensor depth and serial number for each variable
+
 ####variables####
 #sensor type, sensor depth and serial number for each variable
-#generic names
+#generic nameS
+#STANDARD NAMES
 #data max and min
+#VALID MIN AND MAX
 #p01 and p06 names
 
 ncatt_put(ncout, var1, "sensor_type", obj[['model']])
@@ -579,6 +587,7 @@ if (!is.null(obj@metadata$header)){
   for (i in 1:length(history)){
     ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
   }
+  #PRESERVE EVENT_COMMENTS
   ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
   if (length(ec[[1]] != 0)){
     evc <- NULL
