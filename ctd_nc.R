@@ -27,7 +27,8 @@ source('asP01.R')
 #' 
 
 ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
-  
+  require(oce)
+  require(ncdf4)
  
   #input varaibles automatically from obj@data
   

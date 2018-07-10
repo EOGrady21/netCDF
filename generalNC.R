@@ -2,7 +2,10 @@
 
 
 NCcreate <- function(obj, filename, metadata){
- 
+  require(oce)
+  require(ncdf4)
+  
+  
   v <- names(obj@data)
   var <- obj@metadata$dataNamesOriginal
   
