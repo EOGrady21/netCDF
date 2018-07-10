@@ -1,8 +1,9 @@
 ####temperature recorder netCDF####
 
 
-obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
-metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MTR_SAMPLE_METADATA.csv')
+# obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/mtr/MTR_HUD2015030_1898_10546422_1800.ODF', header = 'list')
+# metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/MTR_SAMPLE_METADATA.csv')
+
 source('asP01.R')
 
 #' Moored temperature recorder netCDF template
@@ -13,11 +14,14 @@ source('asP01.R')
 #' @param filename the desired name for the netCDF file produced, if left NULL
 #'   the default will conform to BIO naming conventions
 #' 
-#' @return netCDF file with variables, temperature, time, time_String, station,
-#'   latitude, longitude
+#' @return netCDF file with up to 12 variables
 #' @export
 #'
 #' @examples
+#' file <- list.files('.', pattern = "MTR*...*.ODF")
+#' obj <- read.odf(file)
+#' metadata <- "MTR_SAMPLE_METADATA.csv"
+#' mtr_nc(obj, metadata)
 
 mtr_nc <- function(obj, metadata, filename = NULL){
   
@@ -34,6 +38,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   vt <- grep(var, pattern = 'SYTM')
   var <- var[-vt]
   
+  #POPULATE DATA CODES
   for ( i in 1:length(var)){
     var[[i]] <- as.P01(var[[i]])
   }
@@ -65,6 +70,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
     
   }
   
+  #CHECK NUMBER OF VARIABLES
   numvar <- length(var)
   
  
@@ -179,11 +185,13 @@ mtr_nc <- function(obj, metadata, filename = NULL){
       force_v4 = TRUE
     )
   
+  #INSERT DATA
   
   ncvar_put(ncout, ts_def, obj[['time']])
   ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
+  
   ncvar_put(ncout, v1_def, obj[[variable_1]])
   if (numvar >1){
     ncvar_put(ncout, v2_def, obj[[variable_2]])
@@ -249,10 +257,16 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "water_depth", obj[['waterDepth']])
   ncatt_put(ncout, 0, "cruise_name", obj[['cruise']])
   
-  ####variables####
+  ####variable ATTRIBUTES####
   
 
   #sensor type, sensor depth and serial number for each variable
+  #GENERIC NAMES
+  #P01 AND P06 NAMES AND CODES
+  #STANDARD NAMES
+  #DATA MIN AND MAX
+  #VALID MIN AND MAX
+  
   ncatt_put(ncout, var1, "sensor_type", obj[['model']])
   ncatt_put(ncout, var1, "sensor_depth", obj[['depthMin']])
   ncatt_put(ncout, var1, "serial_number", obj[['serialNumber']])
@@ -578,6 +592,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
     for (i in 1:length(history)){
       ncatt_put(ncout, 0, paste0("ODF_HISTORY_", i), history[[i]])
     }
+    #PRESERVE EVENT COMMENTS
     ec <- list(grep(names(head$EVENT_HEADER), pattern = 'EVENT_COMMENTS'))
     if (length(ec[[1]] != 0)){
       evc <- NULL
