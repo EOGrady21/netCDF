@@ -549,9 +549,10 @@ NCcreate <- function(obj, filename, metadata){
   
   ####BODC P01 names####
   ncatt_put(ncout, "ELTMEP01", "sdn_parameter_urn", "SDN:P01::ELTMEP01")
+  ncatt_put(ncout, "time_string", "sdn_parameter_urn", "SDN:P01::DTUT8601")
   ncatt_put(ncout, "lon", "sdn_parameter_urn", "SDN:P01::ALONZZ01")
   ncatt_put(ncout, "lat", "sdn_parameter_urn", "SDN:P01::ALATZZ01")
-  ncatt_put(ncout, "time_string", "sdn_parameter_urn", "SDN:P01::DTUT8601")
+  
   
   
   ncatt_put(ncout, "lon", "sdn_parameter_name", "Longitude east")
