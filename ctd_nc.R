@@ -4,7 +4,7 @@
 
 # obj <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_DN.ODF', header = 'list')
 # upcast <- read.odf('C:/Users/ChisholmE/Documents/sample files/ctd/CTD_BCD2017666_01_01_UP.ODF', header = 'list')
-#metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
+# metadata <- ('C:/Users/ChisholmE/Documents/sample files/metadata/CTD_SAMPLE_METADATA.csv')
 
 source('asP01.R')
 
@@ -33,7 +33,7 @@ source('asP01.R')
 ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   require(oce)
   require(ncdf4)
- 
+  
   #input varaibles automatically from obj@data
   
   v <- names(obj@data)
@@ -53,7 +53,7 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   i <- 1
   
   for ( vv in var ){
-   
+    
     eval(parse(text = paste0("variable_", i, "<- '" , v[[i]], "'")))
     eval(parse(text= paste0("var",i," <-'", vv$gf3,"'")))
     eval(parse(text = paste0("units", i, " <-'", vv$units, "'")))
@@ -69,10 +69,10 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
       eval(parse(text = paste0("std_variable_", i, " <- NULL")))
     }
     #check if variable also has quality flag
-   if (v[[i]] %in% names(obj[['flags']])) {
-    eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))
-    eval(parse(text = paste0("variable", i , "_QC <- 'quality flag for " , v[[i]], "'")))
-   }
+    if (v[[i]] %in% names(obj[['flags']])) {
+      eval(parse(text = paste0("var", i, "_QC <- '", vv$gf3, "_QC'")))
+      eval(parse(text = paste0("variable", i , "_QC <- 'quality flag for " , v[[i]], "'")))
+    }
     i <- i+1
     
     
@@ -85,29 +85,29 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   #CHECK NUMBER OF FLAGS
   tf <-  v %in% names(obj[['flags']])
   numflag <- length(tf[tf == TRUE])
-
   
-   ####combine up and down cast####
-   if (!is.null(upcast)) {
-     if (obj[['startTime']] == upcast[['startTime']]) {
-       #if (names(upcast@data) == names(obj@data)) {
-         for (l in 1:length(v)) {
-           for (i in 1: length(upcast@data[[1]])){
-             eval(parse(text = paste0("obj[['", v[[l]], "']][length(obj[['", v[[l]], "']]) + 1] <- upcast[['", v[[l]], "']][", i, "]")))
- #add flags
-              eval(parse(text = paste0("obj@metadata$flags[['", v[[l]], "']][length(obj@metadata$flags[['", v[[l]], "']]) +1] <- upcast@metadata$flags[['", v[[l]], "']][", i, "]")))
-           }
-         }
-       # } else{
-       #   warning('UPCAST VARIABLES DO NOT MATCH DOWNCAST!')
-       # }
-       
-     } else{
-       warning('UPCAST START TIME DOES NOT MATCH DOWNCAST START TIME! DOUBLE CHECK FILES!')
-       stop()
-     }
-   }
-   
+  
+  ####combine up and down cast####
+  if (!is.null(upcast)) {
+    if (obj[['startTime']] == upcast[['startTime']]) {
+      #if (names(upcast@data) == names(obj@data)) {
+      for (l in 1:length(v)) {
+        for (i in 1: length(upcast@data[[1]])){
+          eval(parse(text = paste0("obj[['", v[[l]], "']][length(obj[['", v[[l]], "']]) + 1] <- upcast[['", v[[l]], "']][", i, "]")))
+          #add flags
+          eval(parse(text = paste0("obj@metadata$flags[['", v[[l]], "']][length(obj@metadata$flags[['", v[[l]], "']]) +1] <- upcast@metadata$flags[['", v[[l]], "']][", i, "]")))
+        }
+      }
+      # } else{
+      #   warning('UPCAST VARIABLES DO NOT MATCH DOWNCAST!')
+      # }
+      
+    } else{
+      warning('UPCAST START TIME DOES NOT MATCH DOWNCAST START TIME! DOUBLE CHECK FILES!')
+      stop()
+    }
+  }
+  
   ####filename####
   if(missing(filename)){
     filename <- paste("CTD", obj[['cruiseNumber']], obj[['eventNumber']], obj[['eventQualifier']], 'DN', sep = '_')
@@ -117,9 +117,11 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   
   ####setting dimensions and definitions####
   
- 
-  scandim <- ncdim_def("scan", "counts", as.double(obj[['scan']]))
-  timedim <- ncdim_def("time", "seconds since 1970-01-01T00:00:00Z", as.double(obj[['time']]))
+  if (is.null(obj@data[['time']])){
+    dim <- ncdim_def("scan", "counts", as.double(obj[['scan']]))
+  }else{
+    dim <- ncdim_def("time", "seconds since 1970-01-01T00:00:00Z", as.double(obj[['time']]))
+  }
   stationdim <- ncdim_def("station", "counts", as.numeric(obj[['station']]))
   londim <- ncdim_def("lon", "degrees_east" , as.double(obj[['longitude']]))
   latdim <- ncdim_def("lat", "degrees_north", as.double(obj[['latitude']]))
@@ -128,128 +130,131 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   #set fill value
   FillValue <- 1e35
   #####define variables####
-
+  
   dlname <- 'lon'
   lon_def <- ncvar_def(longname= "longitude", units = 'degrees_east', dim = stationdim, name = dlname, prec = 'double')
   
   dlname <- 'lat'
   lat_def <- ncvar_def( longname = 'latitude', units = 'degrees_north', dim =  stationdim, name = dlname, prec = 'double')
   
-  dlname <- "time_02"
-  t_def <- ncvar_def("ELTMEP01", "seconds since 1970-01-01T00:00:00Z", list( stationdim, timedim), FillValue, dlname, prec = "double")
-  
-  dlname <- "time_string"
-  ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, timedim), missval = NULL, name =  dlname, prec = "char")
+  if (!is.null(obj@data[['time']])){
+    dlname <- "time_02"
+    t_def <- ncvar_def("ELTMEP01", "seconds since 1970-01-01T00:00:00Z", list( stationdim, dim), FillValue, dlname, prec = "double")
+    
+    dlname <- "time_string"
+    ts_def <- ncvar_def("DTUT8601", units = "",dim =  list( dimnchar, dim), missval = NULL, name =  dlname, prec = "char")
+    
+  }
   
   dlname <- variable_1
-  v1_def <- ncvar_def(var1, units1, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+  v1_def <- ncvar_def(var1, units1, list(dim, stationdim), FillValue, dlname, prec = 'double')
   
   
   if (numvar >1){
     dlname <- variable_2
-    v2_def <- ncvar_def(var2, units2, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+    v2_def <- ncvar_def(var2, units2, list(dim, stationdim), FillValue, dlname, prec = 'double')
     
     
     if (numvar >2){
       dlname <- variable_3
-      v3_def <- ncvar_def(var3, units3, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+      v3_def <- ncvar_def(var3, units3, list(dim, stationdim), FillValue, dlname, prec = 'double')
       
       
       if (numvar >3){
         dlname <- variable_4
-        v4_def <- ncvar_def(var4, units4, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+        v4_def <- ncvar_def(var4, units4, list(dim, stationdim), FillValue, dlname, prec = 'double')
         
         
         if (numvar >4){
           dlname <- variable_5
-          v5_def <- ncvar_def(var5, units5, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+          v5_def <- ncvar_def(var5, units5, list(dim, stationdim), FillValue, dlname, prec = 'double')
           
           
           if (numvar >5){
             dlname <- variable_6
-            v6_def <- ncvar_def(var6, units6, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+            v6_def <- ncvar_def(var6, units6, list(dim, stationdim), FillValue, dlname, prec = 'double')
             
             
             if (numvar >6){
               dlname <- variable_7
-              v7_def <- ncvar_def(var7, units7, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+              v7_def <- ncvar_def(var7, units7, list(dim, stationdim), FillValue, dlname, prec = 'double')
               
               
               if (numvar >7){
                 dlname <- variable_8
-                v8_def <- ncvar_def(var8, units8, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                v8_def <- ncvar_def(var8, units8, list(dim, stationdim), FillValue, dlname, prec = 'double')
                 
                 
                 if (numvar > 8 ){
                   dlname <- variable_9
-                  v9_def <- ncvar_def(var9, units9, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                  v9_def <- ncvar_def(var9, units9, list(dim, stationdim), FillValue, dlname, prec = 'double')
                   
                   
                   if (numvar > 9 ){
                     dlname <- variable_10
-                    v10_def <- ncvar_def(var10, units10, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                    v10_def <- ncvar_def(var10, units10, list(dim, stationdim), FillValue, dlname, prec = 'double')
                     
                     
                     if (numvar >10){
                       dlname <- variable_11
-                      v11_def <- ncvar_def(var11, units11, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                      v11_def <- ncvar_def(var11, units11, list(dim, stationdim), FillValue, dlname, prec = 'double')
                       
                       if (numvar >11){
                         dlname <- variable_12
-                        v12_def <- ncvar_def(var12, units12, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                        v12_def <- ncvar_def(var12, units12, list(dim, stationdim), FillValue, dlname, prec = 'double')
                         
                         if (numvar >12){
                           dlname <- variable_13
-                          v13_def <- ncvar_def(var13, units13, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                          v13_def <- ncvar_def(var13, units13, list(dim, stationdim), FillValue, dlname, prec = 'double')
                           
                           
                           if (numvar >13){
                             dlname <- variable_14
-                            v14_def <- ncvar_def(var14, units14, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                            v14_def <- ncvar_def(var14, units14, list(dim, stationdim), FillValue, dlname, prec = 'double')
                             
                             
                             if (numvar >14){
                               dlname <- variable_15
-                              v15_def <- ncvar_def(var15, units15, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                              v15_def <- ncvar_def(var15, units15, list(dim, stationdim), FillValue, dlname, prec = 'double')
                               
                               
                               if (numvar >15){
                                 dlname <- variable_16
-                                v16_def <- ncvar_def(var16, units16, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                v16_def <- ncvar_def(var16, units16, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                 
                                 
                                 if (numvar >16){
                                   dlname <- variable_17
-                                  v17_def <- ncvar_def(var17, units17, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                  v17_def <- ncvar_def(var17, units17, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                   
                                   
                                   if (numvar >17){
                                     dlname <- variable_18
-                                    v18_def <- ncvar_def(var18, units18, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                    v18_def <- ncvar_def(var18, units18, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                     
                                     
                                     if (numvar >18){
                                       dlname <- variable_19
-                                      v19_def <- ncvar_def(var19, units19, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                      v19_def <- ncvar_def(var19, units19, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                       
                                       
                                       if (numvar > 19 ){
                                         dlname <- variable_20
-                                        v20_def <- ncvar_def(var20, units20, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                        v20_def <- ncvar_def(var20, units20, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                         
                                         
                                         if (numvar > 20 ){
                                           dlname <- variable_21
-                                          v21_def <- ncvar_def(var21, units21, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                          v21_def <- ncvar_def(var21, units21, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                           
                                           
                                           if (numvar >21){
                                             dlname <- variable_22
-                                            v22_def <- ncvar_def(var22, units22, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                            v22_def <- ncvar_def(var22, units22, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                             
                                             if (numvar >22){
                                               dlname <- variable_23
-                                              v23_def <- ncvar_def(var23, units23, list(timedim, stationdim), FillValue, dlname, prec = 'double')
+                                              v23_def <- ncvar_def(var23, units23, list(dim, stationdim), FillValue, dlname, prec = 'double')
                                               
                                               
                                             }
@@ -279,97 +284,98 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   }
   
   if (numflag > 0){
-  dlname <- variable1_QC
-  v1qc_def <- ncvar_def(var1_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
-  
-  if (numflag > 1){
-    dlname <- variable2_QC
-    v2qc_def <- ncvar_def(var2_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+    dlname <- variable1_QC
+    v1qc_def <- ncvar_def(var1_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
     
-    if (numflag >2){
-      dlname <- variable3_QC
-      v3qc_def <- ncvar_def(var3_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+    if (numflag > 1){
+      dlname <- variable2_QC
+      v2qc_def <- ncvar_def(var2_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
       
-      if (numflag >3){
-        dlname <- variable4_QC
-        v4qc_def <- ncvar_def(var4_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+      if (numflag >2){
+        dlname <- variable3_QC
+        v3qc_def <- ncvar_def(var3_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
         
-        if (numflag >4){
-          dlname <- variable5_QC
-          v5qc_def <- ncvar_def(var5_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+        if (numflag >3){
+          dlname <- variable4_QC
+          v4qc_def <- ncvar_def(var4_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
           
-          if (numflag >5){
-            dlname <- variable6_QC
-            v6qc_def <- ncvar_def(var6_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+          if (numflag >4){
+            dlname <- variable5_QC
+            v5qc_def <- ncvar_def(var5_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
             
-            if (numflag >6){
-              dlname <- variable7_QC
-              v7qc_def <- ncvar_def(var7_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+            if (numflag >5){
+              dlname <- variable6_QC
+              v6qc_def <- ncvar_def(var6_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
               
-              if (numflag >7){
-                dlname <- variable8_QC
-                v8qc_def <- ncvar_def(var8_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+              if (numflag >6){
+                dlname <- variable7_QC
+                v7qc_def <- ncvar_def(var7_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                 
-                if (numflag > 8){
-                  dlname <- variable9_QC
-                  v9qc_def <- ncvar_def(var9_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                if (numflag >7){
+                  dlname <- variable8_QC
+                  v8qc_def <- ncvar_def(var8_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                   
-                  if (numflag >9){
-                    dlname <- variable10_QC
-                    v10qc_def <- ncvar_def(var10_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                  if (numflag > 8){
+                    dlname <- variable9_QC
+                    v9qc_def <- ncvar_def(var9_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                     
-                    if (numflag >10){
-                      dlname <- variable11_QC
-                      v11qc_def <- ncvar_def(var11_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                    if (numflag >9){
+                      dlname <- variable10_QC
+                      v10qc_def <- ncvar_def(var10_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                       
-                      if (numflag >11){
-                        dlname <- variable12_QC
-                        v12qc_def <- ncvar_def(var12_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                      if (numflag >10){
+                        dlname <- variable11_QC
+                        v11qc_def <- ncvar_def(var11_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                         
-                        
-                        if (numflag > 12){
-                          dlname <- variable13_QC
-                          v13qc_def <- ncvar_def(var13_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                        if (numflag >11){
+                          dlname <- variable12_QC
+                          v12qc_def <- ncvar_def(var12_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                           
-                          if (numflag >13){
-                            dlname <- variable14_QC
-                            v14qc_def <- ncvar_def(var14_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                          
+                          if (numflag > 12){
+                            dlname <- variable13_QC
+                            v13qc_def <- ncvar_def(var13_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                             
-                            if (numflag >14){
-                              dlname <- variable15_QC
-                              v15qc_def <- ncvar_def(var15_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                            if (numflag >13){
+                              dlname <- variable14_QC
+                              v14qc_def <- ncvar_def(var14_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                               
-                              if (numflag >15){
-                                dlname <- variable16_QC
-                                v16qc_def <- ncvar_def(var16_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                              if (numflag >14){
+                                dlname <- variable15_QC
+                                v15qc_def <- ncvar_def(var15_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                 
-                                if (numflag >16){
-                                  dlname <- variable17_QC
-                                  v17qc_def <- ncvar_def(var17_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                if (numflag >15){
+                                  dlname <- variable16_QC
+                                  v16qc_def <- ncvar_def(var16_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                   
-                                  if (numflag >17){
-                                    dlname <- variable18_QC
-                                    v18qc_def <- ncvar_def(var18_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                  if (numflag >16){
+                                    dlname <- variable17_QC
+                                    v17qc_def <- ncvar_def(var17_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                     
-                                    if (numflag >18){
-                                      dlname <- variable19_QC
-                                      v19qc_def <- ncvar_def(var19_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                    if (numflag >17){
+                                      dlname <- variable18_QC
+                                      v18qc_def <- ncvar_def(var18_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                       
-                                      if (numflag > 19){
-                                        dlname <- variable20_QC
-                                        v20qc_def <- ncvar_def(var20_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                      if (numflag >18){
+                                        dlname <- variable19_QC
+                                        v19qc_def <- ncvar_def(var19_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                         
-                                        if (numflag >20){
-                                          dlname <- variable21_QC
-                                          v21qc_def <- ncvar_def(var21_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                        if (numflag > 19){
+                                          dlname <- variable20_QC
+                                          v20qc_def <- ncvar_def(var20_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                           
-                                          if (numflag >21){
-                                            dlname <- variable22_QC
-                                            v22qc_def <- ncvar_def(var22_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                          if (numflag >20){
+                                            dlname <- variable21_QC
+                                            v21qc_def <- ncvar_def(var21_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
                                             
-                                            if (numflag >22){
-                                              dlname <- variable23_QC
-                                              v23qc_def <- ncvar_def(var23_QC, units = '', list(timedim, stationdim), missval = 0, dlname, prec = 'integer')
+                                            if (numflag >21){
+                                              dlname <- variable22_QC
+                                              v22qc_def <- ncvar_def(var22_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
+                                              
+                                              if (numflag >22){
+                                                dlname <- variable23_QC
+                                                v23qc_def <- ncvar_def(var23_QC, units = '', list(dim, stationdim), missval = 0, dlname, prec = 'integer')
+                                              }
                                             }
                                           }
                                         }
@@ -392,11 +398,10 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
       }
     }
   }
-  }
   
   
   #####write out definitions to new nc file####
-defs <- grep(ls(), pattern = '_def', value = TRUE)
+  defs <- grep(ls(), pattern = '_def', value = TRUE)
   dd <- NULL
   for ( i in 1:length(defs)){
     eval(parse(text = paste0("dd[[i]] <- ", defs[[i]])))
@@ -405,7 +410,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
     nc_create(
       ncfname,
       
-        dd
+      dd
       ,
       force_v4 = TRUE
     )
@@ -413,9 +418,10 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   ncvar_put(ncout, lon_def, obj[['longitude']])
   ncvar_put(ncout, lat_def, obj[['latitude']])
-  ncvar_put(ncout, ts_def, obj[['time']])
-  ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
-  
+  if (!is.null(obj@data[['time']])){
+    ncvar_put(ncout, ts_def, obj[['time']])
+    ncvar_put(ncout, t_def, as.POSIXct(obj[['time']], tz = 'UTC', origin = '1970-01-01 00:00:00'))
+  }
   ncvar_put(ncout, v1_def, obj@data[[variable_1]])
   if (numvar >1){
     ncvar_put(ncout, v2_def, obj@data[[variable_2]])
@@ -487,51 +493,52 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   ####INSERT FLAGS####
   if (numflag >0){
-  ncvar_put(ncout, v1qc_def, obj@metadata$flags[[variable_1]] )
-  if (numflag >1){
-    ncvar_put(ncout, v2qc_def, obj@metadata$flags[[variable_2]] )
-    if(numflag >2){
-      ncvar_put(ncout, v3qc_def, obj@metadata$flags[[variable_3]] )
-      if (numflag >3){
-        ncvar_put(ncout, v4qc_def, obj@metadata$flags[[variable_4]] )
-        if (numflag >4){
-          ncvar_put(ncout, v5qc_def, obj@metadata$flags[[variable_5]] )
-          if (numflag >5){
-            ncvar_put(ncout, v6qc_def, obj@metadata$flags[[variable_6]] )
-            if (numflag >6){
-              ncvar_put(ncout, v7qc_def, obj@metadata$flags[[variable_7]] )
-              if (numflag >7){
-                ncvar_put(ncout, v8qc_def, obj@metadata$flags[[variable_8]] )
-                if (numflag >8){
-                  ncvar_put(ncout, v9qc_def, obj@metadata$flags[[variable_9]] )
-                  if (numflag >9){
-                    ncvar_put(ncout, v10qc_def, obj@metadata$flags[[variable_10]] )
-                    if (numflag >10){
-                      ncvar_put(ncout, v11qc_def, obj@metadata$flags[[variable_11]] )
-                      if (numflag >11){
-                        ncvar_put(ncout, v12qc_def, obj@metadata$flags[[variable_12]] )
-                        if (numflag >12){
-                          ncvar_put(ncout, v13qc_def, obj@metadata$flags[[variable_13]] )
-                          if(numflag >13){
-                            ncvar_put(ncout, v14qc_def, obj@metadata$flags[[variable_14]] )
-                            if (numflag >14){
-                              ncvar_put(ncout, v15qc_def, obj@metadata$flags[[variable_15]] )
-                              if (numflag >15){
-                                ncvar_put(ncout, v16qc_def, obj@metadata$flags[[variable_16]] )
-                                if (numflag >16){
-                                  ncvar_put(ncout, v17qc_def, obj@metadata$flags[[variable_17]] )
-                                  if (numflag >17){
-                                    ncvar_put(ncout, v18qc_def, obj@metadata$flags[[variable_18]] )
-                                    if (numflag >18){
-                                      ncvar_put(ncout, v19qc_def, obj@metadata$flags[[variable_19]] )
-                                      if (numflag >19){
-                                        ncvar_put(ncout, v20qc_def, obj@metadata$flags[[variable_20]] )
-                                        if (numflag >20){
-                                          ncvar_put(ncout, v21qc_def, obj@metadata$flags[[variable_21]] )
-                                          if (numflag >21){
-                                            ncvar_put(ncout, v22qc_def, obj@metadata$flags[[variable_22]] )
-                                            if (numflag >22){
-                                              ncvar_put(ncout, v23qc_def, obj@metadata$flags[[variable_23]] )
+    ncvar_put(ncout, v1qc_def, obj@metadata$flags[[variable_1]] )
+    if (numflag >1){
+      ncvar_put(ncout, v2qc_def, obj@metadata$flags[[variable_2]] )
+      if(numflag >2){
+        ncvar_put(ncout, v3qc_def, obj@metadata$flags[[variable_3]] )
+        if (numflag >3){
+          ncvar_put(ncout, v4qc_def, obj@metadata$flags[[variable_4]] )
+          if (numflag >4){
+            ncvar_put(ncout, v5qc_def, obj@metadata$flags[[variable_5]] )
+            if (numflag >5){
+              ncvar_put(ncout, v6qc_def, obj@metadata$flags[[variable_6]] )
+              if (numflag >6){
+                ncvar_put(ncout, v7qc_def, obj@metadata$flags[[variable_7]] )
+                if (numflag >7){
+                  ncvar_put(ncout, v8qc_def, obj@metadata$flags[[variable_8]] )
+                  if (numflag >8){
+                    ncvar_put(ncout, v9qc_def, obj@metadata$flags[[variable_9]] )
+                    if (numflag >9){
+                      ncvar_put(ncout, v10qc_def, obj@metadata$flags[[variable_10]] )
+                      if (numflag >10){
+                        ncvar_put(ncout, v11qc_def, obj@metadata$flags[[variable_11]] )
+                        if (numflag >11){
+                          ncvar_put(ncout, v12qc_def, obj@metadata$flags[[variable_12]] )
+                          if (numflag >12){
+                            ncvar_put(ncout, v13qc_def, obj@metadata$flags[[variable_13]] )
+                            if(numflag >13){
+                              ncvar_put(ncout, v14qc_def, obj@metadata$flags[[variable_14]] )
+                              if (numflag >14){
+                                ncvar_put(ncout, v15qc_def, obj@metadata$flags[[variable_15]] )
+                                if (numflag >15){
+                                  ncvar_put(ncout, v16qc_def, obj@metadata$flags[[variable_16]] )
+                                  if (numflag >16){
+                                    ncvar_put(ncout, v17qc_def, obj@metadata$flags[[variable_17]] )
+                                    if (numflag >17){
+                                      ncvar_put(ncout, v18qc_def, obj@metadata$flags[[variable_18]] )
+                                      if (numflag >18){
+                                        ncvar_put(ncout, v19qc_def, obj@metadata$flags[[variable_19]] )
+                                        if (numflag >19){
+                                          ncvar_put(ncout, v20qc_def, obj@metadata$flags[[variable_20]] )
+                                          if (numflag >20){
+                                            ncvar_put(ncout, v21qc_def, obj@metadata$flags[[variable_21]] )
+                                            if (numflag >21){
+                                              ncvar_put(ncout, v22qc_def, obj@metadata$flags[[variable_22]] )
+                                              if (numflag >22){
+                                                ncvar_put(ncout, v23qc_def, obj@metadata$flags[[variable_23]] )
+                                              }
                                             }
                                           }
                                         }
@@ -554,7 +561,6 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
       }
     }
   }
-  }
   
   
   
@@ -563,10 +569,11 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
   ncatt_put(ncout, 'station', 'cf_role', 'profile_id')
-  ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
-  ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
-  ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
- 
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
+    ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
+    ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
+  }
   
   ####global####
   #might be different based on instrument
@@ -1150,10 +1157,14 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   ####CF conventions & BODC standards####
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
-  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
-  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
-  # ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['startTime']])))
-  # ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(obj[['startTime']])))
+  
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
+    ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
+  }else{
+    ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['startTime']])))
+    ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(obj[['startTime']])))
+  }
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -1178,34 +1189,41 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   
   ####BODC P01 names####
- 
+  
   
   ncatt_put(ncout, "lon", "sdn_parameter_urn", "SDN:P01::ALONZZ01")
   ncatt_put(ncout, "lat", "sdn_parameter_urn", "SDN:P01::ALATZZ01")
-  ncatt_put(ncout, "ELTMEP01", "sdn_parameter_urn", "SDN:P01::ELTMEP01")
-  ncatt_put(ncout, "time_string", "sdn_parameter_urn", "SDN:P01::DTUT8601")
-  
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, "ELTMEP01", "sdn_parameter_urn", "SDN:P01::ELTMEP01")
+    ncatt_put(ncout, "time_string", "sdn_parameter_urn", "SDN:P01::DTUT8601")
+  }
   ncatt_put(ncout, "lon", "sdn_parameter_name", "Longitude east")
   ncatt_put(ncout, "lat", "sdn_parameter_name", "Latitude north")
-  ncatt_put(ncout, 'ELTMEP01', "sdn_parameter_name", "Elapsed time (since 1970-01-01T00:00:00Z)")
-  ncatt_put(ncout, 'time_string', "sdn_parameter_name", "String corresponding to format 'YYYY-MM-DDThh:mm:ss.sssZ' or other valid ISO8601 string")
-  
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, 'ELTMEP01', "sdn_parameter_name", "Elapsed time (since 1970-01-01T00:00:00Z)")
+    ncatt_put(ncout, 'time_string', "sdn_parameter_name", "String corresponding to format 'YYYY-MM-DDThh:mm:ss.sssZ' or other valid ISO8601 string")
+  }
   ncatt_put(ncout, "lon", "sdn_uom_urn", "SDN:P06::DEGE")
   ncatt_put(ncout, "lat", "sdn_uom_urn", "SDN:P06:DEGN")
-  ncatt_put(ncout, "ELTMEP01", "sdn_uom_urn", "SDN:P06::UTBB")
-  ncatt_put(ncout, "time_string", "sdn_uom_urn", "SDN:P06::TISO")
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, "ELTMEP01", "sdn_uom_urn", "SDN:P06::UTBB")
+    ncatt_put(ncout, "time_string", "sdn_uom_urn", "SDN:P06::TISO")
+  }
   
   
   ncatt_put(ncout, "lon", "sdn_uom_name", "Degrees east")
   ncatt_put(ncout, "lat", "sdn_uom_name", "Degrees north")
-  ncatt_put(ncout, "ELTMEP01", "sdn_uom_name", "Seconds")
-  ncatt_put(ncout, "time_string", "sdn_uom_name", "ISO8601")
-  
+  if(!is.null(obj@data[['time']])){
+    ncatt_put(ncout, "ELTMEP01", "sdn_uom_name", "Seconds")
+    ncatt_put(ncout, "time_string", "sdn_uom_name", "ISO8601")
+  }
   #####CF standard names####
-
+  
   ncatt_put(ncout, "lat", "standard_name", "latitude")
   ncatt_put(ncout, "lon", "standard_name", "longitude")
-  ncatt_put(ncout, "ELTMEP01", "standard_name", "time")
+  if (!is.null(obj@data[['time']])){
+    ncatt_put(ncout, "ELTMEP01", "standard_name", "time")
+  }
   
   
   ####QUALITY CONTROL attributes####
@@ -1324,7 +1342,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
                                                 ncatt_put(ncout, var23_QC, 'flag_meanings', 'none good probably_good probably_bad bad changed BD excess interpolated missing')
                                                 ncatt_put(ncout, var23_QC, 'references', 'http://www.iode.org/mg22')
                                                 
-                                            
+                                                
                                                 
                                               }
                                             }
@@ -1353,7 +1371,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   #metadata from spreadsheet
   
   #avoid printing variables as metadata
- 
+  
   if (!missing(metadata)) {
     metad <- read.csv(metadata, header = TRUE)
     
@@ -1363,7 +1381,7 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
     
     md <- as.list(mv)
     names(md) <- mn
-  
+    
     for (m in seq_along(md)) {
       ncatt_put(ncout, 0, names(md)[m], md[[m]])
     }
@@ -1416,8 +1434,8 @@ defs <- grep(ls(), pattern = '_def', value = TRUE)
   
   
   ####nc close####
- 
-    nc_close(ncout)
- 
+  
+  nc_close(ncout)
+  
   
 }
