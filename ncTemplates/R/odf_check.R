@@ -145,6 +145,13 @@ odf_check <- function(obj, print = TRUE){
     print('Warning, unknown variable present in file')
   }
 
+  load('R/gf3-p01.RData')
+  for ( i in 1:length(obj@metadata$dataNamesOriginal)){
+    if(length(grep(gf32p01$GF3.code, pattern = obj[['dataNamesOriginal']][[i]])) == 0){
+      print(paste('Warning, non standard data name present,', obj[['dataNamesOriginal']][[i]]))
+    }
+  }
+
   if(print == FALSE){
   sink(NULL)
   }
