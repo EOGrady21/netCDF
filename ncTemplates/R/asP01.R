@@ -11,6 +11,7 @@
 #'
 #' @examples
 as.P01 <- function(gf3){
+
   gf32p01 <- read.csv('c:/Users/ChisholmE/Documents/sample files/GF3 Code Map.csv', header = TRUE)
 
 
