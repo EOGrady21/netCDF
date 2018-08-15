@@ -1,7 +1,7 @@
 ####check ODF metadata before exporting to NC####
 
 #' Check ODF metadata
-#' 
+#'
 #' Check that an ODF object has all the metadata required to build a complete netCDF file
 #'
 #' @param obj an odf object (oce::read.odf())
@@ -18,7 +18,23 @@ odf_check <- function(obj, print = TRUE){
   name <- gsub(obj[['filename']], pattern = ".ODF", replacement = "")
   sink(file = paste0(name, '_metadata_check.txt'))
   }
-  
+
+  #check for empty character strings
+  for( i in 1:length(obj@metadata)){
+    if (length(grep(names(obj@metadata[i]), pattern = '*time', ignore.case = TRUE)) == 0){
+      if (names(obj@metadata[i]) != 'header'){
+        if (!length(obj@metadata[[i]]) > 1){
+          if (!is.na(obj@metadata[[i]])){
+            if( obj@metadata[[i]] == ""){
+              obj@metadata[[i]] <- NA
+            }
+          }
+        }
+      }
+    }
+  }
+
+
   if (is.null(obj[['longitude']])){
     print('Missing Longitude Value!')
   }
@@ -58,7 +74,7 @@ odf_check <- function(obj, print = TRUE){
   if (is.na(obj[['countryInstituteCode']])){
     print('Missing CountryInstituteCode value!')
   }
-  
+
   if(is.null(obj[['cruiseNumber']])){
     print('Missing cruiseNumber value!')
   }
@@ -120,9 +136,17 @@ odf_check <- function(obj, print = TRUE){
       print(paste("institute value is '", obj[['institute']], "' should be 'DFO BIO'"))
     }
   }
-  
+
+  if (length(grep(obj[['dataNamesOriginal']], pattern = "UNKN") > 0)){
+    print('Warning, unknown variable present in file')
+  }
+
+  if (length(grep(obj[['dataNamesOriginal']], pattern = "NONE") > 0)){
+    print('Warning, unknown variable present in file')
+  }
+
   if(print == FALSE){
   sink(NULL)
   }
-  
+
 }
