@@ -236,6 +236,8 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
   ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
   ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
+  ncatt_put(ncout, 'latitude', 'axis', 'Y')
+  ncatt_put(ncout, 'longitude', 'axis', 'X')
 
   #FROM ODF
   ncatt_put(ncout, 0, 'inst_type', obj[['type']])
@@ -244,8 +246,7 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, 'country_code', obj[['countryInstituteCode']])
   ncatt_put(ncout, 0, 'cruise_number', obj[['cruiseNumber']])
   ncatt_put(ncout, 0, "mooring_number", obj[['station']])
-  ncatt_put(ncout, 0, "time_coverage_duration", (tail(obj[['time']], n = 1) - obj[['time']][[1]]))
-  ncatt_put(ncout, 0, "time_coverage_duration_units", "days")
+  ncatt_put(ncout, 0, "time_coverage_duration", paste0("P", round(tail(obj[['time']], n = 1) - obj[['time']][[1]], digits = 3), "D"))
   ncatt_put(ncout, 0, "cdm_data_type", "station")
   ncatt_put(ncout, 0, "serial_number", obj[['serialNumber']])
   ncatt_put(ncout, 0, "data_type", 'MTR')
@@ -502,8 +503,8 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, 'Conventions', 'CF-1.7')
   ncatt_put(ncout, 0, "creator_type", "person")
 
-  ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
-  ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
+  ncatt_put(ncout, 0, "time_coverage_start", strftime(obj[['time']][[1]] , "%Y-%m-%dT%H:%M:%S%z", tz = 'UTC'))
+  ncatt_put(ncout, 0, "time_coverage_end", strftime(obj[['time']][[length(obj[['time']])]] , "%Y-%m-%dT%H:%M:%S%z", tz = 'UTC'))
   ncatt_put(ncout, 0, "geospatial_lat_min", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_max", obj[['latitude']])
   ncatt_put(ncout, 0, "geospatial_lat_units", "degrees_north")
@@ -514,9 +515,8 @@ mtr_nc <- function(obj, metadata, filename = NULL){
   ncatt_put(ncout, 0, "geospatial_vertical_min", obj[['depthMin']])
   ncatt_put(ncout, 0, "geospatial_vertical_units", "metres")
   ncatt_put(ncout, 0, "geospatial_vertical_positive", 'down')
-  ncatt_put(ncout,0, "_FillValue", "1e35")
   ncatt_put(ncout, 0, "date_modified", date())
-  ncatt_put(ncout, 0, "institution", obj[['institute']])
+  ncatt_put(ncout, 0, "institution", "Bedford Institute of Oceanography, DFO")
 
 
   ####BODC P01 names####
