@@ -569,10 +569,14 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   ncatt_put(ncout, 'station', 'latitiude', obj[['latitude']])
   ncatt_put(ncout, 'station', 'standard_name', 'platform_name')
   ncatt_put(ncout, 'station', 'cf_role', 'profile_id')
+  ncatt_put(ncout, 'lon', 'axis', 'Y')
+  ncatt_put(ncout, 'lat', 'axis', 'X')
+
   if (!is.null(obj@data[['time']])){
     ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
     ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
     ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
+    ncatt_put(ncout, 'time', 'axis', 'T')
   }
 
   ####global####
@@ -588,12 +592,10 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   # ncatt_put(ncout, 0, 'standard_name_vocabulary', obj[['standard_name_vocabulary']])
   # ncatt_put(ncout, 0, 'title', obj[['title']])
   # ncatt_put(ncout, 0, 'summary', obj[['summary']])
-  # ncatt_put(ncout, 0, "naming_authority", obj[['naming_authority']])
   # ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
   # ncatt_put(ncout, 0, "publisher_name", obj[['publisher_name']])
   # ncatt_put(ncout, 0, "publisher_email", obj[['publisher_email']])
   # ncatt_put(ncout, 0, "program", obj[['description']])
-  # ncatt_put(ncout, 0, "project", obj[['project']])
   # ncatt_put(ncout, 0, "featureType", obj[['featureType']])
   # ncatt_put(ncout, 0, "source", obj[['source']])
 
@@ -1159,8 +1161,8 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   ncatt_put(ncout, 0, "creator_type", "person")
 
   if (!is.null(obj@data[['time']])){
-    ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['time']][1])))
-    ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(tail(obj[['time']], n= 1))))
+    ncatt_put(ncout, 0, "time_coverage_start", strftime(obj[['time']][[1]] , "%Y-%m-%dT%H:%M:%S%z", tz = 'UTC'))
+    ncatt_put(ncout, 0, "time_coverage_end", strftime(obj[['time']][[length(obj[['time']])]] , "%Y-%m-%dT%H:%M:%S%z", tz = 'UTC'))
   }else{
     ncatt_put(ncout, 0, "time_coverage_start", as.character(as.POSIXct(obj[['startTime']])))
     ncatt_put(ncout, 0, "time_coverage_end", as.character(as.POSIXct(obj[['startTime']])))
@@ -1175,9 +1177,8 @@ ctd_nc <- function(obj, upcast = NULL, metadata, filename = NULL){
   ncatt_put(ncout, 0, "geospatial_vertical_min", obj[['depthMin']])
   ncatt_put(ncout, 0, "geospatial_vertical_units", "metres")
   ncatt_put(ncout, 0, "geospatial_vertical_positive", 'down')
-  ncatt_put(ncout,0, "_FillValue", "1e35")
   ncatt_put(ncout, 0, "date_modified", date())
-  ncatt_put(ncout, 0, "institution", obj[['institute']])
+  ncatt_put(ncout, 0, "institution", "Bedford Institute of Oceanography, DFO")
 
   #new requirements # in csv
   # ncatt_put(ncout, 0, "sea_name", obj[['sea_name']])
