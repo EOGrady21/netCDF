@@ -231,8 +231,8 @@ ncatt_put(ncout, 'station', 'cf_role', 'timeseries_id')
 ncatt_put(ncout, 'time' , 'calendar', 'gregorian')
 ncatt_put(ncout, 'time_string', 'note', 'time values as ISO8601 string, YY-MM-DD hh:mm:ss')
 ncatt_put(ncout, 'time_string', 'time_zone', 'UTC')
-ncatt_put(ncout, 'latitude', 'axis', 'Y')
-ncatt_put(ncout, 'longitude', 'axis', 'X')
+ncatt_put(ncout, 'lat', 'axis', 'Y')
+ncatt_put(ncout, 'lon', 'axis', 'X')
 
 #FROM ODF
 ncatt_put(ncout, 0, 'inst_type', obj[['type']])
