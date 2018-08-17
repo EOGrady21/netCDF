@@ -145,7 +145,11 @@ odf_check <- function(obj, print = TRUE){
     print('Warning, unknown variable present in file')
   }
 
-  load('R/gf3-p01.RData')
+  if(length(duplicated(obj[['dataNamesOriginal']][[TRUE]])) > 0){
+    print('Warning, duplicate names in variables, please adjust before exporting!')
+  }
+
+  load('~/GitHub/netCDF/ncTemplates/R/gf3-p01.RData')
   for ( i in 1:length(obj@metadata$dataNamesOriginal)){
     if(length(grep(gf32p01$GF3.code, pattern = obj[['dataNamesOriginal']][[i]])) == 0){
       print(paste('Warning, non standard data name present,', obj[['dataNamesOriginal']][[i]]))
